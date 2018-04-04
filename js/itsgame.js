@@ -219,7 +219,7 @@ BasicGame.Days = function () {
       "number": 11,
       "text": {
         "en": "(cool down days)",
-        "es": "(dían de calma)"
+        "es": "(días de calma)"
       },
       "waitTime": 3
     },
@@ -480,20 +480,22 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
 BasicGame.Eye.prototype.update = function () {
   var checkLeft = false;
   var checkRight = false;
+  var canSeePlayer = false;
+
+  this.gameObj.light.lightGroup.children[0].x = this.pupil.x;
+  this.gameObj.light.lightGroup.children[0].y = this.pupil.y;
 
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
     // clear the bitmap where we are drawing our lines
     this.bitmap.context.clearRect(0, 0, this.game.width, this.game.height);
   }
 
-  if (this.eye.animations.currentAnim.name === 'happy' ||
-    this.levelEnded === true) {
+  if (this.levelEnded === true) {
     // the player is dead
     return;
   }
 
   if (this.gameObj.isLoadingLevel === true) {
-    // the EYE will start the level as irritated (sleeping)
     this.eye.frame = 0;
     this.pupil.x = this.pupilImagePositions['0'];
     return;
@@ -505,8 +507,10 @@ BasicGame.Eye.prototype.update = function () {
   // test if the target can see the eye by casting a ray (a line) towards the eye.
   // if the ray intersects any walls before it intersects the eye then the wall
   // is in the way.
+  canSeePlayer = this.isPlayerInsideViewZone();
+
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
-    if (this.isPlayerInsideViewZone() === true) {
+    if (canSeePlayer === true) {
       this.playerObj.playerSprite.tint = 0x990000;
     }
     else {
@@ -515,7 +519,7 @@ BasicGame.Eye.prototype.update = function () {
   }
 
   // check if the player is in the side of vision of the EYE
-  if (this.searching === true && this.isPlayerInsideViewZone() === true) {
+  if (this.searching === true && canSeePlayer === true) {
     // check which of the points in the player should be used for "in shadow"
     // evaluation
     if (this.playerObj.playerSprite.left > this.viewZone.left) {
@@ -528,7 +532,8 @@ BasicGame.Eye.prototype.update = function () {
 
     if (this.playerObj.isInShadow(checkLeft, checkRight) === false) {
       if (BasicGame.Game.developmentMode === true) { // [ development mode ]
-        this.playerObj.playerSprite.tint = 0xEECC00;
+        // red, of dead
+        this.playerObj.playerSprite.tint = 0xFF0000;
       }
 
       // shoot to the player
@@ -538,7 +543,8 @@ BasicGame.Eye.prototype.update = function () {
     }
     else {
       if (BasicGame.Game.developmentMode === true) { // [ development mode ]
-        this.playerObj.playerSprite.tint = 0x990000;
+        // blue, of nor dead
+        this.playerObj.playerSprite.tint = 0x00FFFF;
       }
     }
   }
@@ -567,8 +573,17 @@ BasicGame.Eye.prototype.shutdown = function () {
  */
 BasicGame.Eye.prototype.isPlayerInsideViewZone = function () {
   if (this.viewZone.alpha > 0) {
-    return (this.playerObj.playerSprite.left > this.viewZone.left || this.playerObj.playerSprite.right > this.viewZone.left) &&
-      (this.playerObj.playerSprite.right < this.viewZone.right || this.playerObj.playerSprite.left < this.viewZone.right);
+    if ((this.playerObj.playerSprite.right >= this.viewZone.left + this.playerObj.playerSprite.width) &&
+      this.playerObj.playerSprite.right < this.viewZone.right) {
+      return true;
+    }
+
+    if (this.playerObj.playerSprite.left > this.viewZone.left &&
+      (this.playerObj.playerSprite.left <= this.viewZone.right - this.playerObj.playerSprite.width)) {
+      return true;
+    }
+    // return (this.playerObj.playerSprite.left > this.viewZone.left || this.playerObj.playerSprite.right > this.viewZone.left) &&
+    //   (this.playerObj.playerSprite.right < this.viewZone.right || this.playerObj.playerSprite.left < this.viewZone.right);
   }
   return false;
 };
@@ -606,6 +621,12 @@ BasicGame.Eye.prototype.initSearch = function (delay) {
 
   // pick a pattern to start the search
   this.setPattern();
+};
+
+BasicGame.Eye.prototype.stopSearch = function () {
+  this.viewZoneMovementTween.stop();
+  this.pupilMovementTween.stop();
+  this.searching = false;
 };
 
 /**
@@ -652,11 +673,6 @@ BasicGame.Eye.prototype.getMad = function () {
 BasicGame.Eye.prototype.shootPlayer = function (target) {
   var tweensInPause = false;
 
-  if (BasicGame.Game.developmentMode === true) { // [ development mode ]
-    this.drawLinesToTarget(target);
-    this.playerObj.playerSprite.tint = 0x00ff00;
-  }
-
   if (this.shooting === false) {
     this.shooting = true;
     this.searching = false;
@@ -687,6 +703,7 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
           this.pupil.x = this.pupilImagePositions['0'];
           this.pupil.alpha = 1;
           this.searching = true;
+          this.shooting = false;
 
           if (this.viewZoneMovementTween && this.pupilMovementTween) {
             this.viewZoneMovementTween.resume();
@@ -737,8 +754,8 @@ BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
   this.usedPatterns = 0;
   this.stopEyeTweens();
 
-  // this.viewZoneTween.onComplete.removeAll();
-  // this.pupilTween.onComplete.removeAll();
+  this.viewZoneMovementTween.onComplete.removeAll();
+  this.pupilMovementTween.onComplete.removeAll();
 
   if (levelCompleted === true) {
     this.pupil.alpha = 0;
@@ -859,18 +876,11 @@ BasicGame.Eye.prototype.setPattern = function () {
 
   this.lap = 0;
 
-  // pick a pattern (for searching) in the array of available patterns
-  // if (this.usedPatterns !== 0) {
-  //   do {
-  //     newPatternIndex = Math.floor(Math.random() * (this.patterns.length));
-  //     intent++;
-  //   } while (this.currentPatternId === newPatternIndex || intent > 5);
-  //   this.currentPatternId = newPatternIndex;
-  // }
-  // else {
-  //   this.currentPatternId = '0';
-  // }
   if (this.usedPatterns === 0) {
+    this.currentPatternIdIndex = 0;
+    this.currentPatternId = this.currentPatternIdIndex;
+  }
+  else if (this.usedPatterns === 1) {
     this.currentPatternIdIndex = this.gameObj.helper.randomNumber(0, this.patterns.length);
     this.currentPatternId = this.currentPatternIdIndex;
   }
@@ -883,8 +893,6 @@ BasicGame.Eye.prototype.setPattern = function () {
     this.currentPatternId = this.currentPatternIdIndex;
   }
   this.usedPatterns++;
-
-  console.log('Current pattern: ', this.currentPatternId);
 
   // define if the pattern will be used reversed
   this.patternReversed = Math.random() > 0.5 ? true : false;
@@ -925,7 +933,9 @@ BasicGame.Eye.prototype.iteratePattern = function () {
       x: this.viewZone.positions[targetPosition]
     }, this.movementTime);
     this.viewZoneMovementTween.onComplete.add(function () {
-      this.nextStepInPattern();
+      if (this.shooting === false) {
+        this.nextStepInPattern();
+      }
     }, this);
     this.viewZoneMovementTween.start();
 
@@ -940,9 +950,6 @@ BasicGame.Eye.prototype.iteratePattern = function () {
       var c = Math.sqrt((dx * dx) + (dy * dy));
       var alfa = Math.asin(dy / c);
       this.pupil.y = (Math.sin(alfa) * this.LOWER_EYELID_DISTANCE) + this.eye.centerY;
-
-      this.gameObj.light.lightGroup.children[0].x = this.pupil.x;
-      this.gameObj.light.lightGroup.children[0].y = this.pupil.y;
     }, this);
     this.pupilMovementTween.start();
   }
@@ -1846,21 +1853,21 @@ BasicGame.Lightning.prototype.update = function () {
 BasicGame.Lightning.prototype.shoot = function (target) {
   this.fakeThing.x = this.fakeThing.y = 0;
   var targetPos = {
-    x: target.left,
-    y: target.top
+    x: target.centerX,
+    y: target.centerY
   };
 
   // Rotate the lightning sprite so it goes in the
   // direction of the pointer
   this.lightning.rotation = this.game.math.angleBetween(
     this.lightning.x, this.lightning.y,
-    targetPos.x + 16, targetPos.y + 16
+    targetPos.x, targetPos.y
   ) - Math.PI / 2;
 
   // Calculate the distance from the lightning source to the pointer
   var distance = this.game.math.distance(
     this.lightning.x, this.lightning.y,
-    targetPos.x + 16, targetPos.y + 16
+    targetPos.x, targetPos.y
   );
 
   // Create the lightning texture
@@ -1879,8 +1886,8 @@ BasicGame.Lightning.prototype.shoot = function (target) {
     .to({ alpha: 0 }, 250, Phaser.Easing.Cubic.In)
     .start();
 
-  this.fakeThing.x = targetPos.x + 16;
-  this.fakeThing.y = targetPos.y + 16;
+  this.fakeThing.x = targetPos.x;
+  this.fakeThing.y = targetPos.y;
 
   this.lightningSound.play();
 };
@@ -2063,6 +2070,8 @@ BasicGame.Player = function (game, input, gameObj) {
   this.jumpKey2 = Phaser.Keyboard.SPACEBAR;
   this.jumpKey3 = Phaser.Keyboard.UP;
   this.jumpKey4 = Phaser.Keyboard.W;
+  this.downKey1 = Phaser.Keyboard.DOWN;
+  this.downKey2 = Phaser.Keyboard.S;
 
   this.justLeaveGround = false;
 
@@ -2117,7 +2126,8 @@ BasicGame.Player.prototype.create = function (level) {
     this.leftKey1,
     this.rightKey1,
     this.jumpKey1,
-    this.jumpKey2
+    this.jumpKey2,
+    this.downKey1
   ]);
 
   // disable physics in the player's body while the game starts
@@ -2169,11 +2179,6 @@ BasicGame.Player.prototype.create = function (level) {
   if (!this.pieceSound) {
     this.pieceSound = this.game.add.sound('piece', 0.2);
   }
-  // if (!this.piecesSound || this.piecesSound.length === 0) {
-  //   for(var i = 1; i <= 20; i++) {
-  //     this.piecesSound.push(this.game.add.sound('piece' + ((i < 10) ? '0' : '') + i, 0.2));
-  //   }
-  // }
 
   // create the group that will contain the particles that will be used during
   // player death
@@ -2185,7 +2190,6 @@ BasicGame.Player.prototype.create = function (level) {
 
   while (this.particlesGroup.children.length < Math.pow(this.PARTICLES_AMOUNT, 2)) {
     particle = this.game.add.sprite(particleX, particleY, 'player');
-    // particle.tint = this.gameObj.helper.randomColor();
     particle.width = particle.height = increaseAmount;
     particle.originalX = particle.x;
     particle.originalY = particle.y;
@@ -2230,6 +2234,7 @@ BasicGame.Player.prototype.update = function () {
   var leftPressed = false;
   var rightPressed = false;
   var upPressed = false;
+  var downPressed = false;
   var onRightWall = false;
   var onLeftWall = false;
   var headHit = false;
@@ -2283,6 +2288,12 @@ BasicGame.Player.prototype.update = function () {
   leftPressed = this.leftInputIsActive() === true;
   rightPressed = this.rightInputIsActive() === true;
   upPressed = this.upInputIsActive() === true;
+  downPressed = this.downInputIsActive() === true;
+
+  if (this.duckTweenPlaying === true && !downPressed) {
+    this.playBaseSizeTween();
+    this.duckTweenPlaying = false;
+  }
 
   if (this.dialogueDisplayed === true && this.dialogueFadeOutStarted === false &&
     (leftPressed || rightPressed || upPressed)) {
@@ -2355,7 +2366,7 @@ BasicGame.Player.prototype.update = function () {
       if (!this.leftFirstPress) {
         this.leftFirstPress = true;
         this.currentJumpMultiplier = 0;
-        this.walkSound.play();
+        this.walkFeedback(true);
       }
       else {
         this.currentJumpMultiplier += this.JUMP_MULTIPLIER_AMOUNT;
@@ -2384,7 +2395,7 @@ BasicGame.Player.prototype.update = function () {
       if (this.rightFirstPress === false) {
         this.rightFirstPress = true;
         this.currentJumpMultiplier = 0;
-        this.walkSound.play();
+        this.walkFeedback();
       }
       else {
         this.currentJumpMultiplier += this.JUMP_MULTIPLIER_AMOUNT;
@@ -2412,6 +2423,15 @@ BasicGame.Player.prototype.update = function () {
     this.currentJumpMultiplier = 0;
     this.walkSound.stop();
     this.slideSound.stop();
+
+    if (downPressed) {
+      this.duckFeedback();
+    }
+
+    /* if (this.walkTweenPlayed === true) {
+      this.playBaseSizeTween();
+      this.walkTweenPlayed = false;
+    } */
   }
 
   if (upPressed && !headHit) {
@@ -2458,7 +2478,7 @@ BasicGame.Player.prototype.render = function () {
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
     // Sprite debug info
     this.game.debug.bodyInfo(this.playerSprite, 0, 100, 'rgba(0,255,0,0.4)');
-    this.game.debug.body(this.playerSprite, 'rgba(0,255,0,0.4)');
+    // this.game.debug.body(this.playerSprite, 'rgba(0,255,0,0.4)');
   }
 
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
@@ -2503,6 +2523,11 @@ BasicGame.Player.prototype.upInputIsActive = function (duration) {
   return false;
 };
 
+BasicGame.Player.prototype.downInputIsActive = function () {
+  return this.input.keyboard.isDown(this.downKey1) ||
+    this.input.keyboard.isDown(this.downKey2);
+};
+
 BasicGame.Player.prototype.onGroundFeedback = function () {
   var squashTween = null;
   if (this.justLeaveGround === true && !this.squashTweenPlaying) {
@@ -2527,6 +2552,45 @@ BasicGame.Player.prototype.onGroundFeedback = function () {
   }
 
   this.justLeaveGround = false;
+};
+
+BasicGame.Player.prototype.walkFeedback = function (left) {
+  var squashTween = null;
+
+  if (!this.walkTweenPlayed) {
+    squashTween = this.game.add.tween(this.playerSprite);
+    squashTween.to({
+      width: this.BASE_SIZE + this.STRETCH_SQUASH_VALUE / 1.5
+    }, 150, Phaser.Easing.Exponential.Out);
+    squashTween.onComplete.add(function () {
+      this.playBaseSizeTween();
+      this.walkTweenPlayed = false;
+    }, this);
+    squashTween.start();
+    this.walkTweenPlayed = true;
+  }
+
+  if (!this.walkSound.isPlaying) {
+    this.walkSound.play();
+  }
+};
+
+BasicGame.Player.prototype.duckFeedback = function () {
+  var squashTween = null;
+
+  if (!this.duckTweenPlaying) {
+    squashTween = this.game.add.tween(this.playerSprite);
+    squashTween.to({
+      width: this.BASE_SIZE + this.STRETCH_SQUASH_VALUE,
+      height: this.BASE_SIZE - this.STRETCH_SQUASH_VALUE
+    }, 150, Phaser.Easing.Exponential.Out);
+    // squashTween.onComplete.add(function () {
+    //   this.playBaseSizeTween();
+    //   this.duckTweenPlaying = false;
+    // }, this);
+    squashTween.start();
+    this.duckTweenPlaying = true;
+  }
 };
 
 BasicGame.Player.prototype.onWallFeedback = function () {
@@ -2646,20 +2710,22 @@ BasicGame.Player.prototype.isInShadow = function (checkLeft, checkRight) {
 
     // bottom left corner
     raysToLight.push(new Phaser.Line(this.playerSprite.left + offset,
-      this.playerSprite.top + this.playerSprite.height - offset,
+      // this.playerSprite.bottom - offset,
+      this.playerSprite.bottom,
       lightImage.x,
       lightImage.y));
   }
 
   if (checkRight === true) {
     // top right corner
-    raysToLight.push(new Phaser.Line(this.playerSprite.left + this.playerSprite.width - offset,
+    raysToLight.push(new Phaser.Line(this.playerSprite.right - offset,
       this.playerSprite.top + offset,
       lightImage.x, lightImage.y));
 
     // bottom right corner
-    raysToLight.push(new Phaser.Line(this.playerSprite.left + this.playerSprite.width - offset,
-      this.playerSprite.top + this.playerSprite.height - offset,
+    raysToLight.push(new Phaser.Line(this.playerSprite.right - offset,
+      // this.playerSprite.bottom - offset,
+      this.playerSprite.bottom,
       lightImage.x, lightImage.y));
   }
 
@@ -2793,7 +2859,6 @@ BasicGame.Player.prototype.gameInDarkness = function () {
 };
 
 BasicGame.Player.prototype.placeDialogueGroup = function () {
-  // this.dialogueGroup.x = this.playerSprite.centerX - this.dialogueGroup.width;
   if (this.flipDialogue === true) {
     this.dialogueGroup.x = this.playerSprite.centerX - this.dialogueGroup.width + 16;
   }
@@ -2803,13 +2868,13 @@ BasicGame.Player.prototype.placeDialogueGroup = function () {
   this.dialogueGroup.y = this.playerSprite.top - this.dialogueGroup.height - 6.8;
 };
 
-BasicGame.Player.prototype.showDialogue = function () {
+BasicGame.Player.prototype.showDialogue = function (immediateHide) {
   var dayObj = this.gameObj.days.getDay(BasicGame.currentLevel);
   var displayTween = null;
   var dialogueHeight = 0;
 
   if (dayObj.text) {
-    this.waitTime = dayObj.waitTime * 1000;
+    this.waitTime = (immediateHide === true) ? 100 : dayObj.waitTime * 1000;
     this.dialogueText.text = dayObj.text[BasicGame.language];
     this.dialogueBackground.height = this.dialogueText.textHeight + this.DIALOGUE_TEXT_V_PADDING * 2;
     this.dialogueMark.y = this.dialogueBackground.height + 8;
@@ -2841,13 +2906,14 @@ BasicGame.Player.prototype.showDialogue = function () {
   }
 };
 
-BasicGame.Player.prototype.hideDialogue = function () {
+BasicGame.Player.prototype.hideDialogue = function (delay) {
   var displayTween = this.game.add.tween(this.dialogueGroup);
   displayTween.to({
     alpha: 0
-  }, this.FADE_SPEED, Phaser.Easing.Cubic.Out);
+  }, this.FADE_SPEED, Phaser.Easing.Cubic.Out, false, delay);
   displayTween.onComplete.add(function () {
     this.dialogueDisplayed = false;
+    this.dialogueFadeOutStarted = false;
     this.dialogueGroup.width = 0;
     this.dialogueGroup.height = 0;
   }, this);
@@ -3044,6 +3110,7 @@ BasicGame.Game = function (game) {
   this.FADE_DURATION = 700;
   this.KEY_PAUSE = Phaser.Keyboard.P;
   this.KEY_MUTE = Phaser.Keyboard.M;
+  this.KEY_CHAT = Phaser.Keyboard.C;
 
   // destroyable objects (sprites, sounds, groups, tweens...)
   this.background = null;
@@ -3055,6 +3122,7 @@ BasicGame.Game = function (game) {
   this.removeDarkTween = null;
   this.noiseImage = null;
   this.savingText = null;
+  this.uiGroup = null;
 
   // references to other classes
   this.days = null;
@@ -3074,6 +3142,7 @@ BasicGame.Game = function (game) {
   this.pausedOn = 0;
   this.mutedOn = 0;
   this.checkMKey = true;
+  this.checkCKey = true;
   this.changingLevel = false;
   this.fontId = 'font';
   this.savingMsg = {
@@ -3084,6 +3153,7 @@ BasicGame.Game = function (game) {
 
 BasicGame.Game.developmentMode = false;
 BasicGame.isRetrying = false;
+BasicGame.ignoreSave = true;
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║ PHASER STATE METHODS                                                     ║
@@ -3149,8 +3219,13 @@ BasicGame.Game.prototype.create = function () {
 
   this.game.input.keyboard.addKeyCapture([
     this.KEY_PAUSE,
-    this.KEY_MUTE
+    this.KEY_MUTE,
+    this.KEY_CHAT
   ]);
+
+  // ═══════════════════
+  // create the UI group
+  this.createUIGroup();
 
   // ═══════════════════
   // create the darkness
@@ -3235,7 +3310,7 @@ BasicGame.Game.prototype.update = function () {
 
   if (this.inputIsActive(this.KEY_PAUSE) === true) {
     this.pausedOn = this.game.time.now;
-    this.game.paused = !this.game.paused;
+    this.pauseGame();
   }
 
   if (this.game.time.now - this.mutedOn >= 100) {
@@ -3245,7 +3320,16 @@ BasicGame.Game.prototype.update = function () {
   if (this.checkMKey && this.inputIsActive(this.KEY_MUTE) === true) {
     this.mutedOn = this.game.time.now;
     this.checkMKey = false;
-    this.game.sound.mute = !this.game.sound.mute;
+    this.muteGame();
+  }
+
+  if (this.checkCKey === false && this.player.dialogueGroup.alpha === 0) {
+    this.checkCKey = true;
+  }
+
+  if (this.checkCKey && this.inputIsActive(this.KEY_CHAT) === true) {
+    this.checkCKey = false;
+    this.showPlayerDialogue(true);
   }
 
   // show development information
@@ -3263,7 +3347,7 @@ BasicGame.Game.prototype.render = function () {
 
 BasicGame.Game.prototype.pauseUpdate = function () {
   if ((this.game.time.now - this.pausedOn >= 100) && this.inputIsActive(this.KEY_PAUSE) === true) {
-    this.game.paused = !this.game.paused;
+    this.pauseGame();
     this.pausedOn = 0;
   }
 };
@@ -3295,6 +3379,23 @@ BasicGame.Game.prototype.shutdown = function () {
 // ║                                                                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════╝
 
+BasicGame.Game.prototype.createUIGroup = function () {
+  this.uiGroup = this.game.add.group();
+
+  this.chatImage = this.game.add.button(0, 0, 'chat', function () {
+    this.showPlayerDialogue(true);
+  }, this, null, null, null, null, this.uiGroup);
+
+  this.muteButton = this.game.add.button(this.chatImage.right + 10, 0, 'mute',
+    this.muteGame, this, null, null, null, null, this.uiGroup);
+
+  this.pauseButton = this.game.add.button(this.muteButton.right + 10, 0, 'pause',
+    this.pauseGame, this, null, null, null, null, this.uiGroup);
+
+  this.uiGroup.x = this.game.world.width - this.uiGroup.width - 16;
+  this.uiGroup.y = 16;
+};
+
 BasicGame.Game.prototype.arrangeRenderLayers = function () {
   if (this.level.spikes) {
     this.game.world.bringToTop(this.level.spikes);
@@ -3305,6 +3406,7 @@ BasicGame.Game.prototype.arrangeRenderLayers = function () {
   this.game.world.bringToTop(this.level.pieces);
   this.game.world.bringToTop(this.lifesGroup);
   this.game.world.bringToTop(this.player.dialogueGroup);
+  this.game.world.bringToTop(this.uiGroup);
   this.game.world.bringToTop(this.darknessGroup);
 };
 
@@ -3361,7 +3463,7 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
 
   this.game.load.start();
 
-  localStorage.setItem("oh-my-blob", BasicGame.setDay(levelNumber));
+  this.saveGame(BasicGame.setDay(levelNumber));
 };
 
 BasicGame.Game.prototype.levelReady = function () {
@@ -3433,7 +3535,7 @@ BasicGame.Game.prototype.subtractLife = function () {
 
   if (this.lifes <= 0) {
     // save the current level
-    localStorage.setItem("oh-my-blob", BasicGame.addDeath());
+    this.saveGame(BasicGame.addDeath());
 
     // notify the PLAYER that its time to show the animation for dead
     this.player.explote();
@@ -3451,7 +3553,7 @@ BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
     return;
   }
 
-  localStorage.setItem("oh-my-blob", BasicGame.addDeath());
+  this.saveGame(BasicGame.addDeath());
 
   this.lifes = 0;
 
@@ -3511,7 +3613,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 
   if (BasicGame.isRetrying === false) {
     // make the player say a line
-    this.player.showDialogue();
+    this.showPlayerDialogue();
   }
 
   this.lifes = this.LIFES_AMOUNT;
@@ -3560,6 +3662,36 @@ BasicGame.Game.prototype.showLifes = function () {
 BasicGame.Game.prototype.getSkyName = function () {
   return this.helper.getSkyName(BasicGame.currentLevel);
 };
+
+BasicGame.Game.prototype.saveGame = function (data) {
+  if (BasicGame.Game.developmentMode === true || BasicGame.ignoreSave === true) {
+    return;
+  }
+
+  this.saveGame(data);
+};
+
+BasicGame.Game.prototype.showPlayerDialogue = function (immediateHide) {
+  this.player.showDialogue(immediateHide);
+};
+
+BasicGame.Game.prototype.muteGame = function () {
+  this.game.sound.mute = !this.game.sound.mute;
+  this.muteButton.frame = (this.game.sound.mute === true) ? 1 : 0;
+};
+
+BasicGame.Game.prototype.pauseGame = function () {
+  this.game.paused = !this.game.paused;
+  this.pauseButton.frame = 0;
+  this.darknessGroup.getChildAt(0).alpha = 0;
+
+  if (this.game.paused === true) {
+    this.pauseButton.frame = 1;
+    // this.darknessGroup.getChildAt(0).alpha = 0.8;
+    // this.game.world.bringToTop(this.darknessGroup);
+  }
+};
+
 
 // ╔═══════════════════════════════════════════════════════════════════════════╗
 BasicGame.Game.prototype.quitGame = function () {
@@ -3895,8 +4027,12 @@ BasicGame.MainMenu = function (game) {
     'en': 'Credits'
   };
   this.KEYS_DESCRIPTION_MSG = {
-    'es': 'usa A y D o IZQUIERA y DERECHA para moverte\nusa W, Z, ESPACIO o ARRIBA para saltar',
-    'en': 'use A and D or LEFT and RIGHT to move\nuse W, Z, SPACE or UP to jump'
+    'es': 'usa A y D o IZQUIERA y DERECHA para moverte\n' +
+      'usa W, Z, ESPACIO o ARRIBA para saltar\n' +
+      'usa C para ver los diálogos',
+    'en': 'use A and D or LEFT and RIGHT to move\n' +
+      'use W, Z, SPACE or UP to jump\n' +
+      'use C to show the dialogues'
   };
   this.CONTINUE_DAY_MSG = {
     "es": "Día",
@@ -4418,11 +4554,14 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('dialogue_background', 'assets/sprites/dialogue_background.png');
   this.load.image('dialogue_mark', 'assets/sprites/dialogue_mark.png');
   this.load.image('noise', 'assets/sprites/noise.png');
+  this.load.image('chat', 'assets/sprites/chat.png');
 
   // this.load.spritesheet('noise', 'assets/sprites/noise.png', 1024, 640);
   this.load.spritesheet('player', 'assets/sprites/player.png', 32, 32, 1);
   this.load.spritesheet('eye', 'assets/sprites/eye.png', 222, 118, 3);
   this.load.spritesheet('checkbox', 'assets/sprites/checkbox.png', 24, 24, 2);
+  this.load.spritesheet('mute', 'assets/sprites/mute.png', 24, 24, 2);
+  this.load.spritesheet('pause', 'assets/sprites/pause.png', 24, 24, 2);
 
   this.load.audio('b', 'assets/soundfx/b.ogg', true);
   this.load.audio('h', 'assets/soundfx/h.ogg', true);
@@ -4450,7 +4589,7 @@ BasicGame.Preloader.prototype.preload = function () {
 
   // load this if the current level stored requires it, otherwise load it
   // when the player is near the end of the corresponding chapter
-  this.load.image('spike-platform', 'assets/sprites/spike-platform.png');
+  this.load.spritesheet('spike-platform', 'assets/sprites/spike-platform.png', 32, 32);
   this.load.image('spike', 'assets/sprites/spike.png');
   this.load.image('spike-r', 'assets/sprites/spike-r.png');
   this.load.image('spike-l', 'assets/sprites/spike-l.png');
