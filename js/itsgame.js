@@ -337,17 +337,35 @@ BasicGame.Eye = function (game, gameObj) {
   this.LATERAL_CANTHUS_DISTANCE = (191 / 2) * 0.9;
   // Y radius >> vertical half-size of the eyelid fill
   this.LOWER_EYELID_DISTANCE = (96 / 2) * 0.9;
-  this.searchingTime = 19000;
+  this.RESTART_SEARCH_DELAY = 1200;
+  // (!) define the patterns for the EYE
+  // each pattern is formed by a series of steps, each steps defines:
+  // a start position (sp), an end position (ep) and a movement time (mt)
+  //   [
+  //     p1[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
+  //     p2[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
+  //     ...
+  //     pY[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
+  //   ]
+  this.PATTERNS = [
+    [[0, 3, 1], [3, 6, 2], [6, 0, 1]], // this will be always the first pattern
+    [[0, 1, 0.5], [1, 4, 1], [4, 2, 1], [2, 5, 2], [5, 0, 1]],
+    [[0, 3, 0.2], [3, 6, 0.4], [6, 0, 0.2]],
+    [[0, 4, 0.5], [4, 1, 1], [1, 5, 1], [5, 2, 2], [2, 0, 1]]
+  ];
 
   // destroyable objects
   this.eye = null;
   this.viewZone = null;
   this.pupil = null;
+  this.pupilMask = null;
   this.bitmap = null;
   this.laughSound = null;
   this.angerSound = null;
   this.viewZoneMovementTween = null;
   this.pupilMovementTween = null;
+  this.invisibleZoneImage = null;
+  this.invisibleZoneMask = null;
 
   // global properties
   this.game = game;
@@ -361,6 +379,7 @@ BasicGame.Eye = function (game, gameObj) {
   this.movementTime = null;
   this.xDistanceMax = null;
   this.eyeCenterYOffset = null;
+  this.currentPatternCompleted = true;
 
   // things I can take from this.game ═╗
   this.playerObj = null;
@@ -388,11 +407,11 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
   this.pupil.anchor.setTo(0.5, 0.5);
 
   // create the mask for the pupil
-  var mask = this.game.add.graphics(this.eye.x - 95.77, this.eye.y);
-  mask.beginFill(0xff0000);
-  mask.bezierCurveTo(0, 1, 90, 111, 193, 0);
-  mask.bezierCurveTo(193, 0, 110, -106, 0, -1);
-  this.pupil.mask = mask;
+  this.pupilMask = this.game.add.graphics(this.eye.x - 95.77, this.eye.y);
+  this.pupilMask.beginFill(0xff0000);
+  this.pupilMask.bezierCurveTo(0, 1, 90, 111, 193, 0);
+  this.pupilMask.bezierCurveTo(193, 0, 110, -106, 0, -1);
+  this.pupil.mask = this.pupilMask;
 
   // create the array of key positions for the pupil (this will be linked to
   // the position of the view zone)
@@ -405,6 +424,19 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
     '5': this.eye.centerX + this.LATERAL_CANTHUS_DISTANCE / 2.4,
     '6': this.eye.centerX + this.LATERAL_CANTHUS_DISTANCE / 1.4
   };
+
+  this.invisibleZoneMask = this.game.add.graphics(0, 0);
+  this.invisibleZoneMask.beginFill(0xffffff);
+  this.invisibleZoneMask.drawRect(-this.ZONE_SIZE, 0, this.ZONE_SIZE * 2, this.game.world.height);
+  this.invisibleZoneMask.drawRect(this.ZONE_SIZE * 2, 0, this.ZONE_SIZE * 2, this.game.world.height);
+  this.invisibleZoneMask.endFill();
+
+  this.invisibleZoneImage = this.game.add.image(-this.game.world.width, 0, 'credits_background');
+  this.invisibleZoneImage.width = this.game.world.width * 3;
+  this.invisibleZoneImage.height = this.game.world.height;
+  this.invisibleZoneImage.alpha = .3;
+  this.invisibleZoneImage.mask = this.invisibleZoneMask;
+  this.invisibleZoneImage.alpha = 0;
 
   // create the view zones
   this.viewZone = this.game.add.image(this.eye.position.x - this.ZONE_SIZE / 2, 0, 'view_zone');
@@ -421,28 +453,6 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
     '5': this.viewZone.position.x + zoneDiv * 2,
     '6': this.game.world.width - this.ZONE_SIZE
   };
-
-  // (!) define the patterns for the EYE
-  // each pattern is formed by a series of steps, each steps defines:
-  // a start position (sp), an end position (ep) and a movement time (mt)
-  //   [
-  //     p1[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
-  //     p2[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
-  //     ...
-  //     pY[step1[sp, ep, mt], step2[sp, ep, mt]...stepX[sp, ep, mt]],
-  //   ]
-  this.patterns = [
-    [[0, 3, 2], [3, 6, 4], [6, 0, 2]], // this will be always the first pattern
-    [[0, 1, 0.5], [1, 4, 1], [4, 2, 1], [2, 5, 2], [5, 0, 1]],
-    [[0, 3, 0.2], [3, 6, 0.4], [6, 0, 0.2]],
-    [[0, 4, 0.5], [4, 1, 1], [1, 5, 1], [5, 2, 2], [2, 0, 1]]
-  ];
-
-  // ---------------------------------------------------------------------------
-  // setup animations
-  this.eye.animations.add('search', [0], 1, false);
-  this.eye.animations.add('angry', [2], 1, false);
-  this.eye.animations.add('tired', [1], 1, false);
 
   // create a bitmap texture for drawing lines
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
@@ -484,6 +494,7 @@ BasicGame.Eye.prototype.update = function () {
 
   this.gameObj.light.lightGroup.children[0].x = this.pupil.x;
   this.gameObj.light.lightGroup.children[0].y = this.pupil.y;
+  this.invisibleZoneMask.centerX = this.viewZone.centerX + this.ZONE_SIZE;
 
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
     // clear the bitmap where we are drawing our lines
@@ -557,7 +568,10 @@ BasicGame.Eye.prototype.update = function () {
 
 BasicGame.Eye.prototype.shutdown = function () {
   this.viewZone.destroy();
+  this.invisibleZoneImage.destroy();
+  this.invisibleZoneMask.destroy();
   this.pupil.destroy();
+  this.pupilMask.destroy();
   this.eye.destroy();
   this.bitmap.destroy();
   this.viewZoneMovementTween.stop();
@@ -582,8 +596,6 @@ BasicGame.Eye.prototype.isPlayerInsideViewZone = function () {
       (this.playerObj.playerSprite.left <= this.viewZone.right - this.playerObj.playerSprite.width)) {
       return true;
     }
-    // return (this.playerObj.playerSprite.left > this.viewZone.left || this.playerObj.playerSprite.right > this.viewZone.left) &&
-    //   (this.playerObj.playerSprite.right < this.viewZone.right || this.playerObj.playerSprite.left < this.viewZone.right);
   }
   return false;
 };
@@ -596,6 +608,10 @@ BasicGame.Eye.prototype.isPlayerInsideViewZone = function () {
  *                         starting
  */
 BasicGame.Eye.prototype.initSearch = function (delay) {
+  if (this.levelEnded === true) {
+    return;
+  }
+
   // check if it is necessary to wait before starting the search
   if (delay) {
     this.gameObj.helper.timer(delay,
@@ -606,21 +622,25 @@ BasicGame.Eye.prototype.initSearch = function (delay) {
     return;
   }
 
-  // set the defaults for the pupil and the view zone
-  this.viewZone.x = this.viewZone.positions['0'];
-  this.viewZone.alpha = 1;
-  this.pupil.x = this.pupilImagePositions['0'];
-  this.pupil.alpha = 1;
-
   // play the search animation in the EYE's sprite
   this.eye.frame = 0;
-  this.pupil.x = this.pupilImagePositions['0'];
 
   // set the flag that indicates if the EYE is seeking for the player
   this.searching = true;
+  this.shooting = false;
 
   // pick a pattern to start the search
-  this.setPattern();
+  if (this.currentPatternCompleted === true) {
+    this.setPattern();
+  }
+  else {
+    this.viewZone.alpha = 1;
+    this.pupil.alpha = 1;
+    this.invisibleZoneImage.alpha = .5;
+
+    this.nextStepInPattern(100);
+  }
+
 };
 
 BasicGame.Eye.prototype.stopSearch = function () {
@@ -629,145 +649,250 @@ BasicGame.Eye.prototype.stopSearch = function () {
   this.searching = false;
 };
 
-/**
- * Method that plays the 'tired' animation and makes the EYE get mad.
- */
-BasicGame.Eye.prototype.getTired = function () {
-  this.eye.frame = 1;
+BasicGame.Eye.prototype.setPattern = function () {
+  var intent = 0;
+  var newPatternIndex = 0;
 
-  this.pupil.alpha = 0;
-  this.viewZone.alpha = 0;
+  // set the defaults for the pupil and the view zone
+  this.viewZone.x = this.viewZone.positions['0'];
+  this.viewZone.alpha = 1;
+  this.pupil.x = this.pupilImagePositions['0'];
+  this.pupil.alpha = 1;
+  this.invisibleZoneImage.alpha = .5;
 
-  this.getMadTimer = this.game.time.create(true);
-  this.getMadTimer.add(1200,
-    function () {
-      this.getMad();
-    },
-    this);
-  this.getMadTimer.start();
+  this.lap = 0;
+  this.currentPatternCompleted = false;
+
+  // define if the pattern will be used reversed
+  this.patternReversed = Math.random() > 0.5 ? true : false;
+
+  if (this.usedPatterns === 0) {
+    this.currentPatternIdIndex = 0;
+    this.currentPatternId = this.currentPatternIdIndex;
+
+    // at level start, init the search in the opposite direction of player's spawn
+    // position (player on left then this.patternReversed equals true)
+    this.patternReversed = this.gameObj.player.playerSprite.centerX <= this.eye.centerX;
+  }
+  else if (this.usedPatterns === 1) {
+    this.currentPatternIdIndex = this.gameObj.helper.randomNumber(0, this.PATTERNS.length);
+    this.currentPatternId = this.currentPatternIdIndex;
+  }
+  else {
+    // pick the next pattern
+    if (++this.currentPatternIdIndex >= this.PATTERNS.length) {
+      this.currentPatternIdIndex = 0;
+    }
+
+    this.currentPatternId = this.currentPatternIdIndex;
+  }
+  this.usedPatterns++;
+
+  this.pattern = this.PATTERNS[this.currentPatternId];
+
+  // get the index of the initial step of the pattern
+  this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
+  this.iteratePattern();
 };
 
-/**
- * Method that play the 'angry' animation of the EYE, shakes the camera and
- * restarts the seeking for the player.
- */
-BasicGame.Eye.prototype.getMad = function () {
-  // play the angry animation and the sound linked to it
-  this.eye.frame = 2;
-  this.angerSound.play();
+BasicGame.Eye.prototype.iteratePattern = function () {
+  var initPosition = -1;
+  var targetPosition = -1;
+  var currentPattern = this.pattern[this.currentPatternStep];
 
-  // shake the world
-  this.shake();
+  // iterate over the steps of the pattern and make the EYE move to each
+  // position of it
+  if ((!this.patternReversed && this.currentPatternStep < this.pattern.length) ||
+    (this.patternReversed && this.currentPatternStep >= 0)) {
+    if (!this.patternReversed) {
+      initPosition = currentPattern[0];
+      targetPosition = currentPattern[1];
+    }
+    else {
+      initPosition = currentPattern[1];
+      targetPosition = currentPattern[0];
+    }
 
-  // restart the search
-  this.searchAgain = this.game.time.create(true);
-  this.searchAgain.add(1600,
-    function () {
-      this.eye.x = this.eye.originalX;
-      this.initSearch();
-    },
-    this);
-  this.searchAgain.start();
+    // set the initial X position of the EYE and the view zone
+    this.viewZone.x = this.viewZone.positions[initPosition];
+    this.pupil.x = this.pupilImagePositions[initPosition];
+    this.movementTime = currentPattern[2] * 1000;
+
+    this.runPupilViewZoneTweens(targetPosition);
+  }
+  else {
+    // if there are no more steps in the pattern
+    if (++this.lap < 2) {
+      this.gameObj.helper.timer(1000,
+        function () {
+          this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
+          this.iteratePattern();
+        },
+        this);
+    }
+    else {
+      this.currentPatternCompleted = true;
+      // if the pattern was used twice, change it
+      if (this.shooting === true) {
+        // this is triggered when the player enters the view zone while the
+        // eye is looking to the front before getting tired
+        return;
+      }
+
+      if (this.viewZoneMovementTween &&
+        this.viewZoneMovementTween.isRunning) {
+      }
+
+      this.searching = false;
+      this.getTired();
+    }
+  }
+};
+
+BasicGame.Eye.prototype.runPupilViewZoneTweens = function (targetPosition) {
+  // move the view zone and the pupil
+  if (this.viewZoneMovementTween && this.viewZoneMovementTween.isRunning) {
+    return;
+  }
+
+  this.pupilMovementTween = this.game.add.tween(this.pupil);
+  this.pupilMovementTween.to({
+    x: this.pupilImagePositions[targetPosition]
+  }, this.movementTime);
+  this.pupilMovementTween.onUpdateCallback(function () {
+    var dx = Math.abs(this.pupil.x - this.eye.centerX);
+    var xDiffPercentage = 1 - dx / this.xDistanceMax;
+    var dy = (this.eye.centerY + (this.LOWER_EYELID_DISTANCE * xDiffPercentage)) - this.eyeCenterYOffset;
+    var c = Math.sqrt((dx * dx) + (dy * dy));
+    var alfa = Math.asin(dy / c);
+    this.pupil.y = (Math.sin(alfa) * this.LOWER_EYELID_DISTANCE) + this.eye.centerY;
+  }, this);
+  this.pupilMovementTween.start();
+
+  this.viewZoneMovementTween = this.game.add.tween(this.viewZone);
+  this.viewZoneMovementTween.to({
+    x: this.viewZone.positions[targetPosition]
+  }, this.movementTime);
+  this.viewZoneMovementTween.onComplete.addOnce(function () {
+    if (this.shooting === false) {
+      this.nextStepInPattern();
+
+      this.viewZoneMovementTween = null;
+      this.pupilMovementTween = null;
+    }
+  }, this);
+  this.viewZoneMovementTween.start();
+};
+
+BasicGame.Eye.prototype.nextStepInPattern = function (delay) {
+  // wait a second before changing to a new pattern
+  this.gameObj.helper.timer(delay || 1000, function () {
+    if (this.levelEnded === true || this.shooting === true) {
+      return;
+    }
+
+    if (!this.patternReversed) {
+      ++this.currentPatternStep;
+    }
+    else {
+      --this.currentPatternStep;
+    }
+
+    this.iteratePattern();
+  }, this);
 };
 
 BasicGame.Eye.prototype.shootPlayer = function (target) {
   var tweensInPause = false;
 
-  if (this.shooting === false) {
-    this.shooting = true;
-    this.searching = false;
 
-    this.eye.frame = 2;
-    this.lightning.shoot(target);
+  this.shooting = true;
+  this.searching = false;
+  this.eye.frame = 2; // angry eye
+  this.lightning.shoot(target);
 
-    // hide the pupil while shooting
-    this.pupil.alpha = 0;
+  // hide the pupil while shooting
+  this.pupil.alpha = 0;
+  this.viewZone.alpha = 0;
+  this.invisibleZoneImage.alpha = 0;
 
-    // pause the current tweens, if any, for the pupil and the viewzone
-    if ((this.viewZoneMovementTween && this.viewZoneMovementTween.isRunning === true) ||
-      (this.pupilMovementTween && this.pupilMovementTween.isRunning === true)) {
-      tweensInPause = true;
-      this.viewZoneMovementTween.pause();
-      this.pupilMovementTween.pause();
-    }
+  // pause the current tweens, if any, for the pupil and the viewzone
+  if (this.viewZoneMovementTween && this.viewZoneMovementTween.isRunning === true) {
+    this.viewZoneMovementTween.pause();
+    this.pupilMovementTween.pause();
 
-    this.destroyTimers(this.getTiredTimer, this.getMadTimer, this.searchAgain);
-
-    // init the timer that will make the EYE calm down again and restart the
-    // search
-    this.calmDownTimer = this.game.time.create(true);
-    this.calmDownTimer.add(3000,
-      function () {
-        if (tweensInPause === true) {
-          this.eye.frame = 0;
-          this.pupil.x = this.pupilImagePositions['0'];
-          this.pupil.alpha = 1;
-          this.searching = true;
-          this.shooting = false;
-
-          if (this.viewZoneMovementTween && this.pupilMovementTween) {
-            this.viewZoneMovementTween.resume();
-            this.pupilMovementTween.resume();
-          }
-        }
-        else {
-          this.initSearch();
-        }
-
-        var _self = this;
-        setTimeout(function () {
-          _self.shooting = false;
-        }, 200);
-      },
-      this);
-    this.calmDownTimer.start();
+    tweensInPause = true;
   }
-};
 
-BasicGame.Eye.prototype.shake = function () {
-  var shakeTween = this.game.add.tween(this.eye);
-  shakeTween.to({ x: this.eye.originalX + 10 },
-    40,
-    Phaser.Easing.Sinusoidal.InOut,
-    false,
-    0,
-    4,
-    true).start();
+  this.destroyTimers(this.getTiredTimer, this.getMadTimer, this.searchAgain);
+
+  // init the timer that will make the EYE calm down again and restart the
+  // search
+  this.calmDownTimer = this.game.time.create(true);
+  this.calmDownTimer.add(3000,
+    function () {
+      if (tweensInPause === true) {
+        this.eye.frame = 0;
+
+        this.pupil.alpha = 1;
+        this.viewZone.alpha = 1;
+        this.invisibleZoneImage.alpha = .5;
+
+        this.searching = true;
+        this.shooting = false;
+
+        if (this.viewZoneMovementTween && this.pupilMovementTween) {
+          this.viewZoneMovementTween.resume();
+          this.pupilMovementTween.resume();
+        }
+      }
+      else {
+
+        if (this.viewZoneMovementTween) {
+          this.viewZoneMovementTween.stop();
+          this.pupilMovementTween.stop();
+        }
+
+        this.initSearch();
+      }
+    },
+    this);
+  this.calmDownTimer.start();
 };
 
 BasicGame.Eye.prototype.levelStart = function () {
   this.levelEnded = false;
   this.shooting = false;
+  this.usedPatterns = 0;
+  this.currentPatternCompleted = true;
+  this.destroyTimers();
+
   this.initSearch();
 };
 
 BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
+  // this event is called when the level has been ended and all is in darkness (saving progress... message)
   if (this.levelEnded === true) {
     return;
   }
 
   this.levelEnded = true;
-
-  this.destroyTimers();
   this.searching = false;
   this.shooting = false;
-  this.usedPatterns = 0;
-  this.stopEyeTweens();
-
-  this.viewZoneMovementTween.onComplete.removeAll();
-  this.pupilMovementTween.onComplete.removeAll();
-
-  if (levelCompleted === true) {
-    this.pupil.alpha = 0;
-  }
+  this.usedPatterns = 0
+  this.currentPatternCompleted = true;
+  this.destroyTimers();
+  this.stopEyeTweens(true);
 };
 
 BasicGame.Eye.prototype.gameInDarkness = function () {
   this.eye.frame = 0;
   this.viewZone.x = this.viewZone.positions['0'];
   this.pupil.x = this.pupilImagePositions['0'];
-  this.viewZone.alpha = 0;
-  this.pupil.alpha = 0;
+  this.levelEnded = true;
+
+  this.destroyTimers();
+  this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.destroyTimers = function () {
@@ -801,6 +926,7 @@ BasicGame.Eye.prototype.rejoice = function (callback) {
 
   this.destroyTimers();
   this.viewZone.alpha = 0;
+  this.invisibleZoneImage.alpha = 0;
 
   shakeTween = this.game.add.tween(this.eye);
   shakeTween.to({ y: this.eye.originalY + 10 },
@@ -819,32 +945,98 @@ BasicGame.Eye.prototype.rejoice = function (callback) {
   this.laughSound.play();
 };
 
+/**
+ * Method that plays the 'tired' animation and makes the EYE get mad.
+ */
+BasicGame.Eye.prototype.getTired = function () {
+  this.eye.frame = 1;
+
+  this.pupil.alpha = 0;
+  this.viewZone.alpha = 0;
+  this.invisibleZoneImage.alpha = 0;
+
+  if (this.levelEnded === true) {
+    return;
+  }
+
+  this.getMadTimer = this.game.time.create(true);
+  this.getMadTimer.add(1200,
+    function () {
+      this.getMad();
+    },
+    this);
+  this.getMadTimer.start();
+};
+
+/**
+ * Method that play the 'angry' animation of the EYE, shakes the camera and
+ * restarts the seeking for the player.
+ */
+BasicGame.Eye.prototype.getMad = function () {
+  var shakeTween = this.game.add.tween(this.eye);
+
+  // play the angry animation and the sound linked to it
+  this.eye.frame = 2;
+  this.angerSound.play();
+
+  // shake the world
+  shakeTween.to({ x: this.eye.originalX + 10 },
+    40,
+    Phaser.Easing.Sinusoidal.InOut,
+    false,
+    0,
+    4,
+    true);
+  shakeTween.onComplete.addOnce(function () {
+    // restart the search after a while
+    this.searchAgain = this.game.time.create(true);
+    this.searchAgain.add(this.RESTART_SEARCH_DELAY,
+      function () {
+        if (this.levelEnded === true) {
+          return;
+        }
+
+        this.initSearch();
+      },
+      this);
+    this.searchAgain.start();
+  }, this);
+  shakeTween.start();
+
+};
+
 BasicGame.Eye.prototype.updateLevel = function (level) {
   this.level = level;
   this.anger = false;
   this.usedPatterns = 0;
 
-  this.stopEyeTweens();
+  this.stopEyeTweens(true);
 };
 
 BasicGame.Eye.prototype.restartLevel = function () {
   this.anger = false;
   this.levelEnded = true;
 
-  this.stopEyeTweens();
   this.destroyTimers();
+  this.stopEyeTweens(true);
 };
 
-BasicGame.Eye.prototype.stopEyeTweens = function () {
+BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
   if (this.viewZoneMovementTween && this.pupilMovementTween) {
     this.viewZoneMovementTween.stop();
     this.pupilMovementTween.stop();
+
+    this.viewZoneMovementTween.onComplete.removeAll();
+    this.pupilMovementTween.onComplete.removeAll();
   }
 
-  this.viewZone.x = this.viewZone.positions['0'];
-  this.viewZone.alpha = 1;
-  this.pupil.x = this.pupilImagePositions['0'];
-  this.pupil.alpha = 1;
+  if (resetPosition === true) {
+    this.viewZone.x = this.viewZone.positions['0'];
+    this.viewZone.alpha = 1;
+    this.pupil.x = this.pupilImagePositions['0'];
+    this.pupil.alpha = 1;
+    this.invisibleZoneImage.alpha = .5;
+  }
 };
 
 BasicGame.Eye.prototype.drawLinesToTarget = function (target) {
@@ -868,131 +1060,6 @@ BasicGame.Eye.prototype.drawLinesToTarget = function (target) {
   this.bitmap.context.moveTo(target.x + target.width, target.y + target.height);
   this.bitmap.context.lineTo(this.eye.x, this.eye.y);
   this.bitmap.context.stroke();
-};
-
-BasicGame.Eye.prototype.setPattern = function () {
-  var intent = 0;
-  var newPatternIndex = 0;
-
-  this.lap = 0;
-
-  if (this.usedPatterns === 0) {
-    this.currentPatternIdIndex = 0;
-    this.currentPatternId = this.currentPatternIdIndex;
-  }
-  else if (this.usedPatterns === 1) {
-    this.currentPatternIdIndex = this.gameObj.helper.randomNumber(0, this.patterns.length);
-    this.currentPatternId = this.currentPatternIdIndex;
-  }
-  else {
-    // pick the next pattern
-    if (++this.currentPatternIdIndex >= this.patterns.length) {
-      this.currentPatternIdIndex = 0;
-    }
-
-    this.currentPatternId = this.currentPatternIdIndex;
-  }
-  this.usedPatterns++;
-
-  // define if the pattern will be used reversed
-  this.patternReversed = Math.random() > 0.5 ? true : false;
-
-  this.pattern = this.patterns[this.currentPatternId];
-
-  // get the index of the initial step of the pattern
-  this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
-  this.iteratePattern();
-};
-
-BasicGame.Eye.prototype.iteratePattern = function () {
-  var initPosition = -1;
-  var targetPosition = -1;
-  var currentPattern = this.pattern[this.currentPatternStep];
-
-  // iterate over the steps of the pattern and make the EYE move to each
-  // position of it
-  if ((!this.patternReversed && this.currentPatternStep < this.pattern.length) ||
-    (this.patternReversed && this.currentPatternStep >= 0)) {
-    if (!this.patternReversed) {
-      initPosition = currentPattern[0];
-      targetPosition = currentPattern[1];
-    }
-    else {
-      initPosition = currentPattern[1];
-      targetPosition = currentPattern[0];
-    }
-
-    // set the initial X position of the EYE and the view zone
-    this.viewZone.x = this.viewZone.positions[initPosition];
-    this.pupil.x = this.pupilImagePositions[initPosition];
-    this.movementTime = currentPattern[2] * 1000;
-
-    // move the view zone and the pupil
-    this.viewZoneMovementTween = this.game.add.tween(this.viewZone);
-    this.viewZoneMovementTween.to({
-      x: this.viewZone.positions[targetPosition]
-    }, this.movementTime);
-    this.viewZoneMovementTween.onComplete.add(function () {
-      if (this.shooting === false) {
-        this.nextStepInPattern();
-      }
-    }, this);
-    this.viewZoneMovementTween.start();
-
-    this.pupilMovementTween = this.game.add.tween(this.pupil);
-    this.pupilMovementTween.to({
-      x: this.pupilImagePositions[targetPosition]
-    }, this.movementTime);
-    this.pupilMovementTween.onUpdateCallback(function () {
-      var dx = Math.abs(this.pupil.x - this.eye.centerX);
-      var xDiffPercentage = 1 - dx / this.xDistanceMax;
-      var dy = (this.eye.centerY + (this.LOWER_EYELID_DISTANCE * xDiffPercentage)) - this.eyeCenterYOffset;
-      var c = Math.sqrt((dx * dx) + (dy * dy));
-      var alfa = Math.asin(dy / c);
-      this.pupil.y = (Math.sin(alfa) * this.LOWER_EYELID_DISTANCE) + this.eye.centerY;
-    }, this);
-    this.pupilMovementTween.start();
-  }
-  else {
-    // if there are no more steps in the pattern
-    if (++this.lap < 2) {
-      // if the pattern was used twice, change it
-      this.gameObj.helper.timer(1000,
-        function () {
-          this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
-          this.iteratePattern();
-        },
-        this);
-    }
-    else {
-      if (this.shooting === true) {
-        // this is triggered when the player enters the view zone while the
-        // eye is looking to the front before getting tired
-        return;
-      }
-
-      this.searching = false;
-      this.getTired();
-    }
-  }
-};
-
-BasicGame.Eye.prototype.nextStepInPattern = function () {
-  // wait a second before changing to a new pattern
-  this.gameObj.helper.timer(1000, function () {
-    if (this.levelEnded === true || this.shooting === true) {
-      return;
-    }
-
-    if (!this.patternReversed) {
-      ++this.currentPatternStep;
-    }
-    else {
-      --this.currentPatternStep;
-    }
-
-    this.iteratePattern();
-  }, this);
 };
 },{"BasicGame":1}],5:[function(require,module,exports){
 var BasicGame = require('BasicGame');
@@ -3111,6 +3178,11 @@ BasicGame.Game = function (game) {
   this.KEY_PAUSE = Phaser.Keyboard.P;
   this.KEY_MUTE = Phaser.Keyboard.M;
   this.KEY_CHAT = Phaser.Keyboard.C;
+  this.GO_TO_NEXT_LEVEL_DELAY
+  this.DARKNESS_ALPHA = 1;
+  this.GO_TO_NEXT_LEVEL_DELAY = 1500;
+  this.PAUSE_WIDTH = 660; // Illustrator
+  this.PAUSE_HEIGHT = 470; // Illustrator
 
   // destroyable objects (sprites, sounds, groups, tweens...)
   this.background = null;
@@ -3123,6 +3195,7 @@ BasicGame.Game = function (game) {
   this.noiseImage = null;
   this.savingText = null;
   this.uiGroup = null;
+  this.pauseGroup = null;
 
   // references to other classes
   this.days = null;
@@ -3153,7 +3226,7 @@ BasicGame.Game = function (game) {
 
 BasicGame.Game.developmentMode = false;
 BasicGame.isRetrying = false;
-BasicGame.ignoreSave = true;
+BasicGame.ignoreSave = false;
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║ PHASER STATE METHODS                                                     ║
@@ -3228,6 +3301,10 @@ BasicGame.Game.prototype.create = function () {
   this.createUIGroup();
 
   // ═══════════════════
+  // create the Pause group
+  this.createPauseGroup();
+
+  // ═══════════════════
   // create the darkness
   this.darknessGroup = this.add.group();
   darknessBitmap = new Phaser.BitmapData(this.game,
@@ -3242,7 +3319,7 @@ BasicGame.Game.prototype.create = function () {
 
   // create the darkness tween
   this.putDarkTween = this.game.add.tween(this.darknessGroup.getChildAt(0));
-  this.putDarkTween.to({ alpha: 1 }, this.FADE_DURATION, Phaser.Easing.Quadratic.Out, false);
+  this.putDarkTween.to({ alpha: this.DARKNESS_ALPHA }, this.FADE_DURATION, Phaser.Easing.Quadratic.Out, false);
   this.putDarkTween.onComplete.add(this.putDarkTweenCompleted, this);
 
   // create the brightness tween
@@ -3307,6 +3384,10 @@ BasicGame.Game.prototype.update = function () {
 
   // update the lightning
   this.lightning.update();
+
+  if (this.showingDarkness === true) {
+    return;
+  }
 
   if (this.inputIsActive(this.KEY_PAUSE) === true) {
     this.pausedOn = this.game.time.now;
@@ -3396,6 +3477,27 @@ BasicGame.Game.prototype.createUIGroup = function () {
   this.uiGroup.y = 16;
 };
 
+BasicGame.Game.prototype.createPauseGroup = function () {
+  var pauseBackgroundImage = null;
+  var textImage = null;
+  var center = { x: this.game.world.width / 2, y: this.game.world.height / 2 };
+
+  this.pauseGroup = this.game.add.group();
+
+  pauseBackgroundImage = this.game.add.image(center.x, center.y, 'credits_background');
+  pauseBackgroundImage.width = this.PAUSE_WIDTH;
+  pauseBackgroundImage.height = this.PAUSE_HEIGHT;
+  pauseBackgroundImage.anchor.set(0.5, 0.5);
+
+  textImage = this.game.add.image(center.x, center.y, 'pause_' + BasicGame.language);
+  textImage.anchor.set(0.5, 0.5);
+
+  this.pauseGroup.addChild(pauseBackgroundImage);
+  this.pauseGroup.addChild(textImage);
+
+  this.pauseGroup.alpha = 0;
+};
+
 BasicGame.Game.prototype.arrangeRenderLayers = function () {
   if (this.level.spikes) {
     this.game.world.bringToTop(this.level.spikes);
@@ -3421,7 +3523,7 @@ BasicGame.Game.prototype.levelEnded = function () {
     this.savingText.alpha = 1;
     this.game.world.bringToTop(this.savingText);
 
-    this.helper.timer(1500, function () {
+    this.helper.timer(this.GO_TO_NEXT_LEVEL_DELAY, function () {
       // set the flag for loading level
       this.isLoadingLevel = true;
 
@@ -3548,16 +3650,17 @@ BasicGame.Game.prototype.subtractLife = function () {
 };
 
 BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
+  var lifeTween = null;
+
   // if the player collected all the pieces, don't kill him
   if (this.level.endTimer) {
     return;
   }
 
   this.saveGame(BasicGame.addDeath());
-
   this.lifes = 0;
 
-  var lifeTween = this.game.add.tween(this.lifesGroup);
+  lifeTween = this.game.add.tween(this.lifesGroup);
   lifeTween.to({ alpha: 0 },
     180,
     Phaser.Easing.Quadratic.Out,
@@ -3585,6 +3688,10 @@ BasicGame.Game.prototype.showDarkness = function (durationInMS) {
   this.game.world.bringToTop(this.darknessGroup);
   this.putDarkTween.updateTweenData("duration", durationInMS || this.FADE_DURATION);
   this.putDarkTween.start();
+
+  this.chatImage.input.enabled = false;
+  this.muteButton.input.enabled = false;
+  this.pauseButton.input.enabled = false;
 };
 
 BasicGame.Game.prototype.putDarkTweenCompleted = function () {
@@ -3605,10 +3712,13 @@ BasicGame.Game.prototype.hideDarkness = function (durationInMS) {
   this.showingDarkness = false;
   this.removeDarkTween.updateTweenData("duration", durationInMS || this.FADE_DURATION);
   this.removeDarkTween.start();
+
+  this.chatImage.input.enabled = true;
+  this.muteButton.input.enabled = true;
+  this.pauseButton.input.enabled = true;
 };
 
 BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
-  // this.eye.eyeStateTimer = this.eye.searchingTime;
   this.isLoadingLevel = false;
 
   if (BasicGame.isRetrying === false) {
@@ -3684,11 +3794,12 @@ BasicGame.Game.prototype.pauseGame = function () {
   this.game.paused = !this.game.paused;
   this.pauseButton.frame = 0;
   this.darknessGroup.getChildAt(0).alpha = 0;
+  this.pauseGroup.alpha = 0;
 
   if (this.game.paused === true) {
     this.pauseButton.frame = 1;
-    // this.darknessGroup.getChildAt(0).alpha = 0.8;
-    // this.game.world.bringToTop(this.darknessGroup);
+    this.pauseGroup.alpha = 1;
+    this.game.world.bringToTop(this.pauseGroup);
   }
 };
 
@@ -4548,6 +4659,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('pupil', 'assets/sprites/pupil_normal.png');
   this.load.image('light', 'assets/sprites/light.png');
   this.load.image('view_zone', 'assets/sprites/view_zone.png');
+  // this.load.image('invisible_zone', 'assets/sprites/invisible_zone.png');
   this.load.image('piece', 'assets/sprites/piece.png');
   this.load.image('platform', 'assets/sprites/platform.png');
   this.load.image('life', 'assets/sprites/life.png');
@@ -4555,6 +4667,8 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('dialogue_mark', 'assets/sprites/dialogue_mark.png');
   this.load.image('noise', 'assets/sprites/noise.png');
   this.load.image('chat', 'assets/sprites/chat.png');
+  this.load.image('pause_es', 'assets/sprites/pause_es.png');
+  this.load.image('pause_en', 'assets/sprites/pause_en.png');
 
   // this.load.spritesheet('noise', 'assets/sprites/noise.png', 1024, 640);
   this.load.spritesheet('player', 'assets/sprites/player.png', 32, 32, 1);
