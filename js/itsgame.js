@@ -1,6 +1,6 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var BasicGame = {
-  language: "en",
+  language: "es",
   currentLevel: 1,
   deaths: 0,
   rest: 0,
@@ -64,162 +64,162 @@ var BasicGame = require('BasicGame');
 BasicGame.Days = function () {
   this.days = {
     1: {
-      "number": 387,
+      "number": 1095,
       "text": {
         "en": "Maybe it will be there forever",
-        "es": "Tal vez siempre estará ahí"
+        "es": "Esto me acompañará siempre"
       },
       "waitTime": 3
     },
     2: {
-      "number": 349,
+      "number": 998,
       "text": {
         "en": "Sometimes it comes back",
-        "es": "A veces vuelve"
+        "es": "Un par de píldoras pueden ayudar"
       },
       "waitTime": 4
     },
     3: {
-      "number": 313,
+      "number": 912,
       "text": {
         "en": "It is here...again",
-        "es": "Aquí está...otra vez"
+        "es": "Aún a veces lo recuerdo"
       },
       "waitTime": 3
     },
     4: {
-      "number": 248,
+      "number": 839,
       "text": {
         "en": "Why am I thinking about that?",
-        "es": "¿Por qué estoy pensando en eso?"
+        "es": "Ya no necesito tantas píldoras"
       },
       "waitTime": 3
     },
     5: {
-      "number": 212,
+      "number": 766,
       "text": {
         "en": "It's here",
-        "es": "Aquí está"
+        "es": "Todos parecen haberlo olvidado"
       },
       "waitTime": 4
     },
     6: {
-      "number": 186,
+      "number": 730,
       "text": {
         "en": "No again, please",
-        "es": "Otra vez? no por favor"
+        "es": "Algún día se lo contaré a alguien"
       },
       "waitTime": 4
     },
     7: {
-      "number": 171,
+      "number": 657,
       "text": {
         "en": "I thought I had overcome it",
-        "es": "Pensé que lo había superado"
+        "es": "¡Noooo! No puedo volver a pensar en eso"
       },
       "waitTime": 4
     },
     8: {
-      "number": 156,
+      "number": 511,
       "text": {
         "en": "Another day...and it's here",
-        "es": "Otro día...y aquí está"
+        "es": "¿Por qué estoy pensando en eso?"
       },
       "waitTime": 4
     },
     9: {
-      "number": 101,
+      "number": 401,
       "text": {
         "en": "I'm thinking about it",
-        "es": "Estoy pensando en eso"
+        "es": "Pensé que ya lo había superado"
       },
       "waitTime": 4
     },
     10: {
-      "number": 90,
+      "number": 365,
       "text": {
         "en": "(peaceful days)",
-        "es": "(días tranquilos)"
+        "es": "No puedo creer que ya haya pasado un año"
       },
       "waitTime": 5
     },
     11: {
-      "number": 83,
+      "number": 313,
       "text": {
         "en": "What I have done is not as wrong as I thought",
-        "es": "Lo que hice no es tan malo como pensaba"
+        "es": "Dentro de poco habrá pasado un año"
       },
       "waitTime": 5
     },
     12: {
-      "number": 74,
+      "number": 248,
       "text": {
         "en": "I can't believe no one cares about it",
-        "es": "No puedo creer que ha nadie le haya importado"
+        "es": "Su familia parece feliz ahora"
       },
       "waitTime": 5
     },
     13: {
-      "number": 68,
+      "number": 212,
       "text": {
         "en": "Two months has passed and no one talks about it, that's good",
-        "es": "Han pasado más de dos meses y nadie ha dicho nada, eso es bueno"
+        "es": "Pocos lo recuerdan ya"
       },
       "waitTime": 6
     },
     14: {
-      "number": 65,
+      "number": 186,
       "text": {
         "en": "I must admit it, my life has improved after that",
-        "es": "Debo reconocer que mi vida a mejorado después de eso"
+        "es": "Se lo merecía, lo sé"
       },
       "waitTime": 5
     },
     15: {
-      "number": 59,
+      "number": 171,
       "text": {
         "en": "It is odd, is not affecting me",
-        "es": "Qué extraño, empieza a no afectarme"
+        "es": "He estado pensando en eso, no puedo concentrarme"
       },
       "waitTime": 3
     },
     16: {
-      "number": 47,
+      "number": 156,
       "text": {
         "en": "No one have been noticed it...could be so insignificant?",
-        "es": "Aún nadie lo ha notado...¿puede ser tan insignificante?"
+        "es": "Tengo que consumir menos pastillas"
       },
       "waitTime": 5
     },
     17: {
-      "number": 35,
+      "number": 101,
       "text": {
         "en": "How could I thought it isn't wrong? It is wrong!",
-        "es": "¿Cómo pude pensar que no es malo? Es muy malo!"
+        "es": "...ughh...ughhh...sólo fue una pesadilla...tranquila"
       },
       "waitTime": 4
     },
     18: {
-      "number": 28,
+      "number": 90,
       "text": {
         "en": "Maybe it isn't as wrong as I thought",
-        "es": "Tal vez no es algo tan malo como pensaba"
+        "es": "Han pasado casi 3 meses, no puedo creerlo"
       },
       "waitTime": 4
     },
     19: {
-      "number": 16,
+      "number": 74,
       "text": {
         "en": "No one cares about it, that's weird",
-        "es": "Nadie lo ha notado, qué extraño"
+        "es": "Una banda fue culpada. No van a seguir buscando, tranquila"
       },
       "waitTime": 4
     },
     20: {
-      "number": 11,
+      "number": 35,
       "text": {
         "en": "(cool down days)",
-        "es": "(días de calma)"
+        "es": "Mi mamá ya notó lo de las pastillas"
       },
       "waitTime": 3
     },
@@ -227,7 +227,7 @@ BasicGame.Days = function () {
       "number": 9,
       "text": {
         "en": "I'm a bad person",
-        "es": "Soy una mala persona"
+        "es": "Hoy supe que tienen pistas..."
       },
       "waitTime": 3
     },
@@ -235,7 +235,7 @@ BasicGame.Days = function () {
       "number": 8,
       "text": {
         "en": "What if someone goes to the appartment?",
-        "es": "¿Qué tal si alguien va al apartamento?"
+        "es": "En las noticias dijeron que fue un robo"
       },
       "waitTime": 4
     },
@@ -243,7 +243,7 @@ BasicGame.Days = function () {
       "number": 7,
       "text": {
         "en": "How could I do it?...how could I?",
-        "es": "¿Cómo pude hacerlo?...¿cómo pude?"
+        "es": "Su familia está sufriendo..."
       },
       "waitTime": 3
     },
@@ -251,7 +251,7 @@ BasicGame.Days = function () {
       "number": 6,
       "text": {
         "en": "Brother: You have to calm down, I told you it wouldn't be easy",
-        "es": "Hermano: Tienes que calmarte, te dije que no sería fácil"
+        "es": "Hoy me pareció verlo en la calle. ¡Eso no puede ser!"
       },
       "waitTime": 5
     },
@@ -259,7 +259,7 @@ BasicGame.Days = function () {
       "number": 5,
       "text": {
         "en": "I must talk with my brother",
-        "es": "Tengo que hablar con mi hermano"
+        "es": "¡No puedo más! Tengo que confesar lo que hice"
       },
       "waitTime": 4
     },
@@ -267,7 +267,7 @@ BasicGame.Days = function () {
       "number": 4,
       "text": {
         "en": "Don't don't don't...there must be something I can do",
-        "es": "No no no no!...debe haber algo que pueda hacer"
+        "es": "Ernesto era un maldito borracho bueno para nada"
       },
       "waitTime": 6
     },
@@ -275,7 +275,7 @@ BasicGame.Days = function () {
       "number": 3,
       "text": {
         "en": "I have to tell everything...I...must...",
-        "es": "Tengo que contarlo todo...tengo...que..."
+        "es": "La policía ha estado preguntando cosas, ¿qué voy a hacer?"
       },
       "waitTime": 6
     },
@@ -283,7 +283,7 @@ BasicGame.Days = function () {
       "number": 2,
       "text": {
         "en": "...maybe she deserved it...but..who am I to judge?",
-        "es": "...tal vez sí lo merecía...pero...¿quién soy yo para juzgar?"
+        "es": "Tranquila, sabes que él lo merecía"
       },
       "waitTime": 7
     },
@@ -291,7 +291,7 @@ BasicGame.Days = function () {
       "number": 1,
       "text": {
         "en": "She didn't deserve it...",
-        "es": "Ella no se lo merecía..."
+        "es": "Tengo que...confesar...te...tengo que..."
       },
       "waitTime": 3
     },
@@ -299,7 +299,7 @@ BasicGame.Days = function () {
       "number": 0,
       "text": {
         "en": "...oh...what I've done?",
-        "es": "...pero...¿qué he hecho?"
+        "es": "¿Qué he hecho? ¿¡QUÉ HE HECHOOO!?"
       },
       "waitTime": 3
     }
@@ -573,9 +573,10 @@ BasicGame.Eye.prototype.shutdown = function () {
   this.pupil.destroy();
   this.pupilMask.destroy();
   this.eye.destroy();
-  this.bitmap.destroy();
-  this.viewZoneMovementTween.stop();
-  this.pupilMovementTween.stop();
+  if (this.bitmap) {
+    this.bitmap.destroy();
+  }
+  this.stopEyeTweens();
   this.laughSound.destroy();
   this.angerSound.destroy();
 };
@@ -882,7 +883,7 @@ BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
   this.usedPatterns = 0
   this.currentPatternCompleted = true;
   this.destroyTimers();
-  this.stopEyeTweens(true);
+  this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.gameInDarkness = function () {
@@ -1023,11 +1024,10 @@ BasicGame.Eye.prototype.restartLevel = function () {
 
 BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
   if (this.viewZoneMovementTween && this.pupilMovementTween) {
-    this.viewZoneMovementTween.stop();
-    this.pupilMovementTween.stop();
-
     this.viewZoneMovementTween.onComplete.removeAll();
     this.pupilMovementTween.onComplete.removeAll();
+    this.viewZoneMovementTween.stop();
+    this.pupilMovementTween.stop();
   }
 
   if (resetPosition === true) {
@@ -3010,7 +3010,6 @@ window.onload = function () {
     game.state.add('Boot', BasicGame.Boot);
     game.state.add('Preloader', BasicGame.Preloader);
     game.state.add('MainMenu', BasicGame.MainMenu);
-    // game.state.add('Intro', BasicGame.Intro);
     game.state.add('Game', BasicGame.Game);
     game.state.add('TheEnd', BasicGame.TheEnd);
 
@@ -3222,6 +3221,7 @@ BasicGame.Game = function (game) {
     "es": "Guardando progreso...",
     "en": "Saving progress..."
   };
+  this.levelCompleted = null;
 };
 
 BasicGame.Game.developmentMode = false;
@@ -3262,6 +3262,7 @@ BasicGame.Game.prototype.create = function () {
   this.lifes = this.LIFES_AMOUNT;
   this.showFPS = false;
   this.inDarkness = true;
+  this.levelCompleted = false;
 
   // set stage background
   this.background = this.game.add.image(0, 0, this.getSkyName());
@@ -3517,6 +3518,7 @@ BasicGame.Game.prototype.inputIsActive = function (key) {
 };
 
 BasicGame.Game.prototype.levelEnded = function () {
+  this.levelCompleted = true;
   BasicGame.isRetrying = false;
   this.putDarkTween.onComplete.addOnce(function () {
     // show the Progress saved message
@@ -3536,6 +3538,8 @@ BasicGame.Game.prototype.levelEnded = function () {
 };
 
 BasicGame.Game.prototype.loadLevel = function (levelNumber) {
+  this.saveGame(BasicGame.setDay(levelNumber));
+
   if (levelNumber > 30) {
     // congrats, you ended the game
     this.state.start('TheEnd');
@@ -3564,8 +3568,6 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
     Phaser.Tilemap.TILED_JSON);
 
   this.game.load.start();
-
-  this.saveGame(BasicGame.setDay(levelNumber));
 };
 
 BasicGame.Game.prototype.levelReady = function () {
@@ -3577,6 +3579,7 @@ BasicGame.Game.prototype.levelReady = function () {
     this.arrangeRenderLayers();
   }
 
+  this.levelCompleted = false;
   this.hideDarkness();
 };
 
@@ -3702,7 +3705,7 @@ BasicGame.Game.prototype.putDarkTweenCompleted = function () {
 
   this.showLifes();
 
-  if (this.lifes <= 0) {
+  if (this.lifes <= 0 && !this.levelCompleted) {
     this.restartLevel(true);
   }
 };
@@ -3740,6 +3743,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 
 BasicGame.Game.prototype.restartLevel = function (runHideDarkness) {
   // restore the alpha for life indicators and lifes' group
+  BasicGame.isRetrying = true;
   this.lifes = this.LIFES_AMOUNT;
   this.showLifes();
 
@@ -4140,22 +4144,28 @@ BasicGame.MainMenu = function (game) {
   this.KEYS_DESCRIPTION_MSG = {
     'es': 'usa A y D o IZQUIERA y DERECHA para moverte\n' +
       'usa W, Z, ESPACIO o ARRIBA para saltar\n' +
-      'usa C para ver los diálogos',
+      'usa C para ver los diálogos\n' +
+      'toma las píldoras para superar el día',
     'en': 'use A and D or LEFT and RIGHT to move\n' +
       'use W, Z, SPACE or UP to jump\n' +
-      'use C to show the dialogues'
+      'use C to show the dialogues' +
+      'take pills to get over the day'
   };
   this.CONTINUE_DAY_MSG = {
-    "es": "Día",
-    "en": "Day"
+    'es': 'Día',
+    'en': 'Day'
   };
   this.SPANISH_LANG_MSG = {
-    "es": "Español",
-    "en": "Spanish"
+    'es': 'Español',
+    'en': 'Spanish'
   };
   this.ENGLISH_LANG_MSG = {
-    "es": "Inglés",
-    "en": "English"
+    'es': 'Inglés',
+    'en': 'English'
+  };
+  this.END_SCENE_MSG = {
+    'es': 'Escena final',
+    'en': 'End scene'
   };
 
   // destroyable objects (sprites, sounds, groups, tweens...)
@@ -4185,6 +4195,9 @@ BasicGame.MainMenu = function (game) {
 BasicGame.MainMenu.prototype.create = function () {
   var _self = this;
 
+  this.translatableTexts = [];
+  this.menuButtons = [];
+
   // set the background
   this.backgroundImage = this.game.add.image(0, 0, 'main_menu_background');
   this.backgroundImage.width = this.game.world.width;
@@ -4203,7 +4216,7 @@ BasicGame.MainMenu.prototype.create = function () {
     'In the Shadows',
     72);
   this.titleText.anchor.set(0.5, 0);
-  this.titleText.align = "center";
+  this.titleText.align = 'center';
   this.titleText.tint = 0x303c42;
 
   // add the text for key inputs
@@ -4212,7 +4225,7 @@ BasicGame.MainMenu.prototype.create = function () {
     this.KEYS_DESCRIPTION_MSG[BasicGame.language],
     18);
   this.keysDescriptionText.anchor.set(0.5, 0);
-  this.keysDescriptionText.align = "center";
+  this.keysDescriptionText.align = 'center';
   this.keysDescriptionText.tint = 0x303c42;
   this.keysDescriptionText.x = this.game.world.width / 2;
   this.keysDescriptionText.bottom = this.game.world.height - this.SCREEN_PADDING;
@@ -4244,30 +4257,7 @@ BasicGame.MainMenu.prototype.create = function () {
 };
 
 BasicGame.MainMenu.prototype.update = function () {
-  // afstand van middenpunt oog tot cursor
-  dx = this.game.input.activePointer.x - this.fakeEye.centerX;
-  dy = this.game.input.activePointer.y - this.fakeEye.centerY;
-  // stelling van pythagoras
-  c = Math.sqrt((dx * dx) + (dy * dy));
-
-  // afstand middelpunt tot pupil
-  r = this.fakeEye.radius * 0.3;
-
-  // cursor op oog
-  if (Math.abs(dx) < r && Math.abs(dy) < r && c < r) {
-    r = c;
-  }
-
-  // hoek bepalen
-  alfa = Math.asin(dy / c);
-
-  // coordinaten op rand cirkel bepalen
-  this.giantPupilImage.x = (Math.cos(alfa) * r) + this.fakeEye.centerX;
-  // 180 graden fout herstellen
-  if (dx < 0) {
-    this.giantPupilImage.x = this.fakeEye.centerX * 2 - this.giantPupilImage.x;
-  }
-  this.giantPupilImage.y = (Math.sin(alfa) * r) + this.fakeEye.centerY;
+  // this.followPointer();
 };
 
 /**
@@ -4291,7 +4281,6 @@ BasicGame.MainMenu.prototype.shutdown = function () {
   this.menuButtons = null;
   this.closeButton = null;
 };
-
 // ║                                                                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════╝
 
@@ -4306,9 +4295,17 @@ BasicGame.MainMenu.prototype.createOptionsGroup = function () {
       hSpace: 0,
       vSpace: 1,
       group: this.optionsGroup,
-      overCallback: this.showKeysDescription.bind(this, true),
-      outCallback: this.showKeysDescription.bind(this, false),
-      clickCallback: this.showIntro
+      overCallback: (function() {
+        if (BasicGame.currentLevel <= 30) {
+          this.showKeysDescription(true);
+        }
+      }).bind(this),
+      outCallback: (function() {
+        if (BasicGame.currentLevel <= 30) {
+          this.showKeysDescription(false);
+        }
+      }).bind(this),
+      clickCallback: this.nextScene
     });
   }
   this.addOptionTo({
@@ -4433,7 +4430,7 @@ BasicGame.MainMenu.prototype.addOptionTo = function (prop) {
     button.centerY,
     this.FONT_REGULAR, prop.msg[BasicGame.language], 18);
   text.anchor.set(1, 0.5);
-  text.align = prop.textAlign || "right";
+  text.align = prop.textAlign || 'right';
   text.tint = prop.textColor || 0xfafafa;
   text.defaultTint = text.tint;
   text.linkedButton = button;
@@ -4513,10 +4510,10 @@ BasicGame.MainMenu.prototype.newGame = function () {
   var levelData = null;
   var skyName = null;
 
-  localStorage.removeItem("oh-my-blob");
+  localStorage.removeItem('oh-my-blob');
   BasicGame.reset();
 
-  this.game.load.onLoadComplete.addOnce(this.showIntro, this);
+  this.game.load.onLoadComplete.addOnce(this.nextScene, this);
   levelData = BasicGame.Helper.prototype.getLevelIdAndName(BasicGame.currentLevel);
   skyName = BasicGame.Helper.prototype.getSkyName(BasicGame.currentLevel);
   this.load.image(skyName, 'assets/sprites/' + skyName + '.png');
@@ -4527,9 +4524,8 @@ BasicGame.MainMenu.prototype.newGame = function () {
   this.game.load.start();
 };
 
-BasicGame.MainMenu.prototype.showIntro = function () {
-  // this.state.start((BasicGame.currentLevel === 1) ? 'Intro' : 'Game');
-  this.state.start('Game');
+BasicGame.MainMenu.prototype.nextScene = function () {
+  this.state.start((BasicGame.currentLevel <= 30) ? 'Game' : 'TheEnd');
 };
 
 BasicGame.MainMenu.prototype.setLanguage = function (newLang) {
@@ -4540,7 +4536,7 @@ BasicGame.MainMenu.prototype.setLanguage = function (newLang) {
   this.spanishCheckbox.frame = 0;
   this.englishCheckbox.frame = 0;
 
-  localStorage.setItem("oh-my-blob", BasicGame.setLanguage(newLang));
+  localStorage.setItem('oh-my-blob', BasicGame.setLanguage(newLang));
 
   if (newLang === 'es') {
     this.spanishCheckbox.frame = 1;
@@ -4611,10 +4607,41 @@ BasicGame.MainMenu.prototype.showCredits = function (show) {
   });
 };
 
+BasicGame.MainMenu.prototype.followPointer = function () {
+  // afstand van middenpunt oog tot cursor
+  dx = this.game.input.activePointer.x - this.fakeEye.centerX;
+  dy = this.game.input.activePointer.y - this.fakeEye.centerY;
+  // stelling van pythagoras
+  c = Math.sqrt((dx * dx) + (dy * dy));
+
+  // afstand middelpunt tot pupil
+  r = this.fakeEye.radius * 0.3;
+
+  // cursor op oog
+  if (Math.abs(dx) < r && Math.abs(dy) < r && c < r) {
+    r = c;
+  }
+
+  // hoek bepalen
+  alfa = Math.asin(dy / c);
+
+  // coordinaten op rand cirkel bepalen
+  this.giantPupilImage.x = (Math.cos(alfa) * r) + this.fakeEye.centerX;
+  // 180 graden fout herstellen
+  if (dx < 0) {
+    this.giantPupilImage.x = this.fakeEye.centerX * 2 - this.giantPupilImage.x;
+  }
+  this.giantPupilImage.y = (Math.sin(alfa) * r) + this.fakeEye.centerY;
+};
+
 BasicGame.MainMenu.prototype.getDayString = function (newLang) {
   var days = new BasicGame.Days();
-  return this.CONTINUE_DAY_MSG[BasicGame.language] +
-    ' ' + days.getDay(BasicGame.currentLevel).number;
+  if (BasicGame.currentLevel <= 30) {
+    return this.CONTINUE_DAY_MSG[BasicGame.language] +
+      ' ' + days.getDay(BasicGame.currentLevel).number;
+  }
+  
+  return this.END_SCENE_MSG[BasicGame.language];
 };
 },{"BasicGame":1}],17:[function(require,module,exports){
 var BasicGame = require('BasicGame');
@@ -4659,7 +4686,6 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('pupil', 'assets/sprites/pupil_normal.png');
   this.load.image('light', 'assets/sprites/light.png');
   this.load.image('view_zone', 'assets/sprites/view_zone.png');
-  // this.load.image('invisible_zone', 'assets/sprites/invisible_zone.png');
   this.load.image('piece', 'assets/sprites/piece.png');
   this.load.image('platform', 'assets/sprites/platform.png');
   this.load.image('life', 'assets/sprites/life.png');
@@ -4718,7 +4744,8 @@ BasicGame.Preloader.prototype.preload = function () {
 };
 
 BasicGame.Preloader.prototype.create = function () {
-  //Once the load has finished we disable the crop because we're going to sit in the update loop for a short while as the music decodes
+  // Once the load has finished we disable the crop because we're going to sit in
+  // the update loop for a short while as the music decodes
   this.preloadBar.cropEnabled = false;
 };
 
@@ -4733,271 +4760,189 @@ BasicGame.Preloader.prototype.update = function () {
 var BasicGame = require('BasicGame');
 
 BasicGame.TheEnd = function (game) {
+  // constants
+  this.PANELS_SPACING = 16;
+  this.FADEIN_DELAY = 800;
+  this.NEXT_PANEL_DELAY = 1500;
+  this.KEY_NEXT1 = Phaser.Keyboard.D;
+  this.KEY_NEXT2 = Phaser.Keyboard.RIGHT;
+  this.FONT_REGULAR = 'font';
+  this.FONT_MEDIUM = 'font-medium';
+  this.FOOTER_MSG = {
+    'es': 'Hace un par de horas\nPasada la media noche',
+    'en': 'A couple of hours ago\nPast midnight'
+  };
+  this.NEXT_MSG = {
+    'es': 'siguiente',
+    'en': 'next'
+  };
+  this.MAINMENU_MSG = {
+    'es': 'ir al menú principal',
+    'en': 'go to main menu'
+  };
+  this.PANELS_KEYS = [
+    'end_scene_p1v1',
+    'end_scene_p1v2',
+    'end_scene_p1v3',
+    'end_scene_p2v1',
+    'end_scene_p2v2',
+    'end_scene_p2v3'
+  ];
+
+  // destroyable objects (sprites, sounds, groups, tweens...)
   this.background = null;
-  this.fontId = 'font';
-  this.textColors = {
-    'H': 0x000000,
-    'B': 0xFFFFFF
-  };
-  this.dialogs = {
-    "es": [
-      {
-        character: 'B',
-        text: 'Han pasado 388 días desde que acabé con la vida de Margareth.',
-        bips: 3,
-        waitTime: 3
-      },
-      {
-        character: 'B',
-        text: 'Estuve a punto de darme por vencido unas # veces; de contarlo todo a la policía.',
-        bips: 5,
-        waitTime: 5
-      },
-      {
-        character: 'B',
-        text: 'Los primeros días fueron muy difíciles. Me costaba mucho evitar El Remordimiento.',
-        bips: 4,
-        waitTime: 5
-      },
-      {
-        character: 'B',
-        text: 'Pero lo he logrado.',
-        bips: 1,
-        waitTime: 2
-      },
-      {
-        character: 'B',
-        text: 'Ahora que lo pienso, beneficiarse de la muerte de otro no es algo malo.',
-        bips: 4,
-        waitTime: 5
-      },
-      {
-        character: 'B',
-        text: 'Creo que empiezo a entender la forma de pensar de mi hermano.',
-        bips: 3,
-        waitTime: 3
-      }
-    ],
-    "en": [
-      {
-        character: 'B',
-        text: '388 days has passed since I murdered Margareth.',
-        bips: 2,
-        waitTime: 3
-      },
-      {
-        character: 'B',
-        text: 'I was tempted to tell all to the police like 30 times.',
-        bips: 3,
-        waitTime: 4
-      },
-      {
-        character: 'B',
-        text: 'The first days were the hardest. It was very difficult to avoid The Remorse.',
-        bips: 4,
-        waitTime: 5
-      },
-      {
-        character: 'B',
-        text: 'But I succeeded.',
-        bips: 1,
-        waitTime: 2
-      },
-      {
-        character: 'B',
-        text: 'Now that I think about it, get benefit from another\'s death is not such bad thing.',
-        bips: 4,
-        waitTime: 5
-      },
-      {
-        character: 'B',
-        text: 'I think I start to understand the way my brother thinks.',
-        bips: 3,
-        waitTime: 3
-      }
-    ]
-  };
-  this.textBitmapsGroup = null;
-  this.dialogNumber = 0;
-  this.BSound = null;
-  this.soundLoopTimer = null;
-  this.cloudsLimit = 9;
-
+  this.panelsGroup = null;
+  this.buttonGroup = null;
+  this.footerText = null;
   this.music = null;
+
+  // global properties
+  this.currentPanelIndex = 0;
+  this.nextClicked = false;
 };
 
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║ PHASER STATE METHODS                                                     ║
 BasicGame.TheEnd.prototype.preload = function() {
-  this.load.image('end_scene', 'assets/images/end_scene-min.png');
-  this.load.image('sun_light', 'assets/images/sun_light-min.png');
-  this.load.atlas('clouds', 'assets/sprites/clouds.png', 'assets/sprites/clouds.xml', null, Phaser.Loader.TEXTURE_ATLAS_XML_STARLING);
-  this.load.audio('the_end', 'assets/music/the_end.ogg', true);
+  if (BasicGame.language === 'es') {
+    this.load.image(this.PANELS_KEYS[0], 'assets/sprites/end_es_1-1.png');
+    this.load.image(this.PANELS_KEYS[1], 'assets/sprites/end_es_1-2.png');
+    this.load.image(this.PANELS_KEYS[2], 'assets/sprites/end_es_1-3.png');
+    this.load.image(this.PANELS_KEYS[3], 'assets/sprites/end_es_2-1.png');
+    this.load.image(this.PANELS_KEYS[4], 'assets/sprites/end_es_2-2.png');
+    this.load.image(this.PANELS_KEYS[5], 'assets/sprites/end_es_2-3.png');
+  }
+  else if (BasicGame.language === 'en') {
+    this.load.image(this.PANELS_KEYS[0], 'assets/sprites/end_en_1-1.png');
+    this.load.image(this.PANELS_KEYS[1], 'assets/sprites/end_en_1-2.png');
+    this.load.image(this.PANELS_KEYS[2], 'assets/sprites/end_en_1-3.png');
+    this.load.image(this.PANELS_KEYS[3], 'assets/sprites/end_en_2-1.png');
+    this.load.image(this.PANELS_KEYS[4], 'assets/sprites/end_en_2-2.png');
+    this.load.image(this.PANELS_KEYS[5], 'assets/sprites/end_en_2-3.png');
+  }
+
+  this.load.audio('exit_music', 'assets/music/the_end.ogg', true);
 };
 
-BasicGame.TheEnd.prototype.create = function() {
+BasicGame.TheEnd.prototype.create = function () {
+  var index = 0;
+  var panelImage = null;
+  var panelCounter = 0;
+  var nextButton = null;
+  var nextText = null;
+
+  this.nextClicked = false;
+
   // set the background for the scene
-  // this.game.stage.backgroundColor = 0x000000;
-  this.background = this.game.add.tileSprite(0, 0,
-    this.game.world.width, this.game.world.height, "end_scene");
+  this.background = this.game.add.image(0, 0, 'credits_background');
+  this.background.width = this.game.world.width;
+  this.background.height = this.game.world.height;
 
-  // load the sound for B's voice
-  this.BSound = this.game.add.sound('b', 0.2);
+  // add the footer message
+  this.footerText = this.game.add.bitmapText(this.game.world.width - 16,
+    this.game.world.height - 16,
+    this.FONT_MEDIUM, this.FOOTER_MSG[BasicGame.language], 24);
+  this.footerText.anchor.set(1, 1);
+  this.footerText.align = 'right';
 
-  // show the first line of The Confession
-  var firstDialogTimer = this.game.time.create(true);
-  firstDialogTimer.add(2500,
-    function(){
-      this.updateDialog();
-    },
-    this);
-  firstDialogTimer.start();
+  // add the panels group
+  this.panelsGroup = this.game.add.group();
+  for (index = 0; index < this.PANELS_KEYS.length; index++) {
+    panelImage = this.game.add.image(0, 0, this.PANELS_KEYS[index], 0, this.panelsGroup);
+    panelImage.x = panelCounter * (panelCounter > 0 ? panelImage.width + this.PANELS_SPACING : 0);
+    panelImage.alpha = 0;
 
-  // create the loop that will generate clouds
-  this.cloudsContainer = this.game.add.group();
+    if (++panelCounter > 2) {
+      panelCounter = 0;
+    }
+  }
+  this.panelsGroup.x = 16;
+  this.panelsGroup.y = 16;
 
-  // fill the scene with 3 clouds
-  this.createCloud(true);
-  this.createCloud(true);
-  this.createCloud(true);
-
-  this.cloudsTimer = this.game.time.create(true);
-  this.cloudsTimer.loop(8000, function(){
-    this.createCloud();
-  }, this);
-  this.cloudsTimer.start();
+  // add the next group
+  this.createButton({
+    buttonText: this.NEXT_MSG[BasicGame.language],
+    clickCallback: function () {
+      this.buttonGroup.destroy();
+      this.nextClicked = true;
+      this.showPanel();
+    }
+  });
+  this.buttonGroup.children[0].input.enabled = false;
+  this.buttonGroup.alpha = 0;
 
   // play the music
-  this.music = this.game.add.sound('the_end', 0.1, true);
-  this.music.play();
+  this.music = this.game.add.sound('exit_music', 0.1, true);
 
-  // add the sun light for the clouds
-  this.game.add.image(0, -96, 'sun_light').alpha = 0.5;
-
-  // create the group that will contain the dialog
-  this.textBitmapsGroup = this.game.add.group();
-  this.textBitmapsGroup.y = 10;
-  this.textBitmapsGroup.x = 0;
+  // init the animations for the first page
+  this.currentPanelIndex = 0;
+  this.showPanel();
 };
 
-BasicGame.TheEnd.prototype.update = function(){};
+BasicGame.TheEnd.prototype.update = function () {
 
-BasicGame.TheEnd.prototype.updateDialog = function(){
-  if(this.dialogNumber <= this.dialogs[BasicGame.language].length - 1){
-    var dialogObj = this.dialogs[BasicGame.language][this.dialogNumber];
-    // there are still dialogs to be shown
-    var currentDialogLine = dialogObj.text;
-    var character = dialogObj.character;
+};
 
-    if (currentDialogLine.indexOf("#") !== -1) {
-      currentDialogLine = currentDialogLine.replace("#", BasicGame.getDeaths() || 500);
+/**
+ * This method will be called when the State is shutdown (i.e. you switch to another state from this one).
+ */
+BasicGame.TheEnd.prototype.shutdown = function () {
+  this.background.destroy();
+  this.panelsGroup.destroy();
+  this.buttonGroup.destroy();
+  this.footerText.destroy();
+  this.music.destroy();
+};
+// ║                                                                           ║
+// ╚═══════════════════════════════════════════════════════════════════════════╝
+BasicGame.TheEnd.prototype.showPanel = function () {
+  var fadeTween = null;
+
+  if (this.currentPanelIndex > 2) {
+    if (this.currentPanelIndex > 5) {
+      // show main menu button
+      this.createButton({
+        buttonText: this.MAINMENU_MSG[BasicGame.language],
+        clickCallback: function () {
+          this.state.start('MainMenu');
+        }
+      });
+      return;
     }
-
-    this.showText(this.createText(currentDialogLine, this.textColors[character]),
-      dialogObj.waitTime);
-
-    // play the bips of the dialog
-    if (dialogObj.bips > 0) {
-      this.soundLoopTimer = this.game.time.create(true);
-      this.soundLoopTimer.repeat(100, dialogObj.bips, function(){
-        this[dialogObj.character + "Sound"].play();
-      }, this);
-      this.soundLoopTimer.start();
+    else if (this.buttonGroup.alpha === 0 && !this.nextClicked) {
+      // show next button
+      this.buttonGroup.children[0].input.enabled = true;
+      this.buttonGroup.alpha = 1;
+      return;
     }
-
-    this.dialogNumber++;
   }
-};
-
-BasicGame.TheEnd.prototype.createText = function(text, tint) {
-  if (!this.yPosDialog) {
-    this.yPosDialog = 30;
-  }
-
-  var textBitmapsGroupChilds = this.textBitmapsGroup.children;
-  if (textBitmapsGroupChilds.length > 0) {
-    this.yPosDialog += textBitmapsGroupChilds[textBitmapsGroupChilds.length - 1].y + textBitmapsGroupChilds[textBitmapsGroupChilds.length - 1].height;
-    this.yPosDialog += 10;
-  }
-
-  var textsGroup = this.game.add.group(this.textBitmapsGroup);
-  textsGroup.alpha = 0;
-
-  var dialogTextShadowBitmap = this.add.bitmapText(42,
-    this.yPosDialog + 2,
-    this.fontId,
-    text,
-    40,
-    textsGroup);
-  dialogTextShadowBitmap.align = "left";
-  dialogTextShadowBitmap.anchor.set(0, 0);
-  dialogTextShadowBitmap.tint = 0x000000;
-  dialogTextShadowBitmap.maxWidth = this.game.world.width - 100;
-  dialogTextShadowBitmap.alpha = 0.6;
-
-  var dialogTextBitmap = this.add.bitmapText(40,
-    this.yPosDialog,
-    this.fontId,
-    text,
-    40,
-    textsGroup);
-  dialogTextBitmap.align = "left";
-  dialogTextBitmap.anchor.set(0, 0);
-  dialogTextBitmap.tint = tint || 0xFFFFFF;
-  dialogTextBitmap.maxWidth = this.game.world.width - 100;
-
-  return textsGroup;
-};
-
-BasicGame.TheEnd.prototype.showText = function(displayObj, timeForRead) {
-  this.dialogTween = this.game.add.tween(displayObj);
-  this.dialogTween.to({alpha: 1},
-    400,
-    Phaser.Easing.Quadratic.In,
-    false);
-  this.dialogTween.onComplete.addOnce(function() {
-    this.dialogTween.stop();
-
-    var nextDialogTimer = this.game.time.create(true);
-    nextDialogTimer.add(timeForRead * 1000,
-      function(){
-        this.updateDialog();
-      },
-      this);
-    nextDialogTimer.start();
+  
+  fadeTween = this.game.add.tween(this.panelsGroup.children[this.currentPanelIndex++]);
+  fadeTween.to({ alpha: 1 }, this.FADEIN_DELAY, Phaser.Easing.Quadratic.Out, false);
+  fadeTween.onComplete.addOnce(function () {
+    this.game.time.create(this.game, true)
+    .add(this.NEXT_PANEL_DELAY, this.showPanel, this)
+    .timer.start(100);
   }, this);
-  this.dialogTween.start();
+  fadeTween.start();
 };
 
-BasicGame.TheEnd.prototype.getRandom = function(min, max) {
-  return Math.floor(Math.random()*(max-min+1)+min);
-};
+BasicGame.TheEnd.prototype.createButton = function (prop) {
+  this.buttonGroup = this.game.add.group();
 
-BasicGame.TheEnd.prototype.createCloud = function(insideScreen) {
-  // add the cloud out of the screen
-  var cloudX = 0;
+  nextButton = this.game.add.button(this.game.world.width / 2,
+    this.footerText.centerY, 'button_background', prop.clickCallback, this);
+  nextButton.anchor.set(.5, .5);
 
-  if (insideScreen === true) {
-    cloudX = this.getRandom(100, this.game.world.width - 150);
-  }
-  else {
-    cloudX = this.game.world.width + this.getRandom(10, 20);
-  }
+  nextText = this.game.add.bitmapText(nextButton.x, nextButton.y,
+    this.FONT_REGULAR, prop.buttonText, 18);
+  nextText.anchor.set(.5, .5);
 
-  var cloudImg = this.game.add.image(cloudX, 0,
-    'clouds', 'cloud0' + this.getRandom(1, 9) + '.png', this.cloudsContainer);
-  cloudImg.y = this.getRandom(0-cloudImg.height/2, this.game.world.height - cloudImg.height - 210);
-  cloudImg.alpha = Math.min(Math.random(), 0.3);
+  nextButton.width = nextText.textWidth + 32;
+  nextButton.height = nextText.textHeight + 16;
 
-  // create the tween that will move the cloud
-  this.cloudTween = this.game.add.tween(cloudImg);
-  this.cloudTween.to({x: 0 - cloudImg.width - 20},
-    30000,
-    null,
-    false);
-  this.cloudTween.onComplete.addOnce(function() {
-    this.target.destroy();
-    this.stop();
-  }, this.cloudTween);
-  this.cloudTween.start();
+  this.buttonGroup.addChild(nextButton);
+  this.buttonGroup.addChild(nextText);
 };
 },{"BasicGame":1}]},{},[11,12,13,14,15,16,17,18,3,4,5,6,7,8,9,10,2])
 //# sourceMappingURL=itsgame.js.map
