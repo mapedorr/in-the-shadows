@@ -64,250 +64,250 @@ var BasicGame = require('BasicGame');
 BasicGame.Days = function () {
   this.days = {
     1: {
-      "number": 1095,
-      "text": {
-        "en": "Maybe it will be there forever",
-        "es": "Esto me acompañará siempre"
+      'number': 1095,
+      'text': {
+        'en': 'This will always be with me',
+        'es': 'Esto me acompañará siempre'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     2: {
-      "number": 998,
-      "text": {
-        "en": "Sometimes it comes back",
-        "es": "Un par de píldoras pueden ayudar"
+      'number': 998,
+      'text': {
+        'en': 'A couple of pills could help',
+        'es': 'Un par de píldoras pueden ayudar'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     3: {
-      "number": 912,
-      "text": {
-        "en": "It is here...again",
-        "es": "Aún a veces lo recuerdo"
+      'number': 912,
+      'text': {
+        'en': 'Sometimes I still remember it',
+        'es': 'Aún a veces lo recuerdo'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     4: {
-      "number": 839,
-      "text": {
-        "en": "Why am I thinking about that?",
-        "es": "Ya no necesito tantas píldoras"
+      'number': 839,
+      'text': {
+        'en': 'I no longer need so many pills',
+        'es': 'Ya no necesito tantas píldoras'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     5: {
-      "number": 766,
-      "text": {
-        "en": "It's here",
-        "es": "Todos parecen haberlo olvidado"
+      'number': 766,
+      'text': {
+        'en': 'Everyone seems to have forgotten it',
+        'es': 'Todos parecen haberlo olvidado'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     6: {
-      "number": 730,
-      "text": {
-        "en": "No again, please",
-        "es": "Algún día se lo contaré a alguien"
+      'number': 730,
+      'text': {
+        'en': 'Someday I will tell someone',
+        'es': 'Algún día se lo contaré a alguien'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     7: {
-      "number": 657,
-      "text": {
-        "en": "I thought I had overcome it",
-        "es": "¡Noooo! No puedo volver a pensar en eso"
+      'number': 657,
+      'text': {
+        'en': 'Noooo! I can\'t be thinking about that again',
+        'es': '¡Noooo! No puedo estar pensando en eso'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     8: {
-      "number": 511,
-      "text": {
-        "en": "Another day...and it's here",
-        "es": "¿Por qué estoy pensando en eso?"
+      'number': 511,
+      'text': {
+        'en': 'Why am I thinking about that?',
+        'es': '¿Por qué estoy pensando en eso?'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     9: {
-      "number": 401,
-      "text": {
-        "en": "I'm thinking about it",
-        "es": "Pensé que ya lo había superado"
+      'number': 401,
+      'text': {
+        'en': 'I thought I had already passed it',
+        'es': 'Pensé que ya lo había superado'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     10: {
-      "number": 365,
-      "text": {
-        "en": "(peaceful days)",
-        "es": "No puedo creer que ya haya pasado un año"
+      'number': 365,
+      'text': {
+        'en': 'I can\'t believe that one year has passed',
+        'es': 'No puedo creer que ya haya pasado un año'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     11: {
-      "number": 313,
-      "text": {
-        "en": "What I have done is not as wrong as I thought",
-        "es": "Dentro de poco habrá pasado un año"
+      'number': 313,
+      'text': {
+        'en': 'Soon, a year will have been passed',
+        'es': 'Dentro de poco habrá pasado un año'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     12: {
-      "number": 248,
-      "text": {
-        "en": "I can't believe no one cares about it",
-        "es": "Su familia parece feliz ahora"
+      'number': 248,
+      'text': {
+        'en': 'His family seems happy now',
+        'es': 'Su familia parece feliz ahora'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     13: {
-      "number": 212,
-      "text": {
-        "en": "Two months has passed and no one talks about it, that's good",
-        "es": "Pocos lo recuerdan ya"
+      'number': 212,
+      'text': {
+        'en': 'Few remember him already',
+        'es': 'Pocos lo recuerdan ya'
       },
-      "waitTime": 6
+      'waitTime': 6
     },
     14: {
-      "number": 186,
-      "text": {
-        "en": "I must admit it, my life has improved after that",
-        "es": "Se lo merecía, lo sé"
+      'number': 186,
+      'text': {
+        'en': 'He deserved it, I know',
+        'es': 'Se lo merecía, lo sé'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     15: {
-      "number": 171,
-      "text": {
-        "en": "It is odd, is not affecting me",
-        "es": "He estado pensando en eso, no puedo concentrarme"
+      'number': 171,
+      'text': {
+        'en': 'I\'ve been thinking about that, I can\'t concentrate',
+        'es': 'He estado pensando en eso, no puedo concentrarme'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     16: {
-      "number": 156,
-      "text": {
-        "en": "No one have been noticed it...could be so insignificant?",
-        "es": "Tengo que consumir menos pastillas"
+      'number': 156,
+      'text': {
+        'en': 'I\'ve to consume less pills',
+        'es': 'Tengo que consumir menos pastillas'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     17: {
-      "number": 101,
-      "text": {
-        "en": "How could I thought it isn't wrong? It is wrong!",
-        "es": "...ughh...ughhh...sólo fue una pesadilla...tranquila"
+      'number': 101,
+      'text': {
+        'en': '...ughh ...ughhh ...it was just a nightmare...',
+        'es': '...ughh...ughhh...sólo fue una pesadilla...'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     18: {
-      "number": 90,
-      "text": {
-        "en": "Maybe it isn't as wrong as I thought",
-        "es": "Han pasado casi 3 meses, no puedo creerlo"
+      'number': 90,
+      'text': {
+        'en': 'Almost 3 months have passed, I can\'t believe it',
+        'es': 'Han pasado casi 3 meses, no puedo creerlo'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     19: {
-      "number": 74,
-      "text": {
-        "en": "No one cares about it, that's weird",
-        "es": "Una banda fue culpada. No van a seguir buscando, tranquila"
+      'number': 74,
+      'text': {
+        'en': 'A band was blamed, they wont keep looking',
+        'es': 'Una banda fue culpada, no van a seguir buscando'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     20: {
-      "number": 35,
-      "text": {
-        "en": "(cool down days)",
-        "es": "Mi mamá ya notó lo de las pastillas"
+      'number': 35,
+      'text': {
+        'en': 'My mom already noticed about the pills',
+        'es': 'Mi mamá ya notó lo de las pastillas'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     21: {
-      "number": 9,
-      "text": {
-        "en": "I'm a bad person",
-        "es": "Hoy supe que tienen pistas..."
+      'number': 9,
+      'text': {
+        'en': 'Today I found out they have clues...',
+        'es': 'Hoy supe que tienen pistas...'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     22: {
-      "number": 8,
-      "text": {
-        "en": "What if someone goes to the appartment?",
-        "es": "En las noticias dijeron que fue un robo"
+      'number': 8,
+      'text': {
+        'en': 'The news said it was a robbery',
+        'es': 'En las noticias dijeron que fue un robo'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     23: {
-      "number": 7,
-      "text": {
-        "en": "How could I do it?...how could I?",
-        "es": "Su familia está sufriendo..."
+      'number': 7,
+      'text': {
+        'en': 'His family is suffering...',
+        'es': 'Su familia está sufriendo...'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     24: {
-      "number": 6,
-      "text": {
-        "en": "Brother: You have to calm down, I told you it wouldn't be easy",
-        "es": "Hoy me pareció verlo en la calle. ¡Eso no puede ser!"
+      'number': 6,
+      'text': {
+        'en': 'I saw him on the street today. That can\'t be!!!',
+        'es': 'Hoy me pareció verlo en la calle. ¡ESO NO PUEDE SER!'
       },
-      "waitTime": 5
+      'waitTime': 5
     },
     25: {
-      "number": 5,
-      "text": {
-        "en": "I must talk with my brother",
-        "es": "¡No puedo más! Tengo que confesar lo que hice"
+      'number': 5,
+      'text': {
+        'en': 'I can\'t take it anymore! I have to confess what I did',
+        'es': '¡No puedo más! Tengo que confesar lo que hice'
       },
-      "waitTime": 4
+      'waitTime': 4
     },
     26: {
-      "number": 4,
-      "text": {
-        "en": "Don't don't don't...there must be something I can do",
-        "es": "Ernesto era un maldito borracho bueno para nada"
+      'number': 4,
+      'text': {
+        'en': 'Bill was a damn drunk good for nothing! I had to do it',
+        'es': '¡Ernesto era un maldito borracho bueno para nada! Tenía que hacerlo'
       },
-      "waitTime": 6
+      'waitTime': 6
     },
     27: {
-      "number": 3,
-      "text": {
-        "en": "I have to tell everything...I...must...",
-        "es": "La policía ha estado preguntando cosas, ¿qué voy a hacer?"
+      'number': 3,
+      'text': {
+        'en': 'The police have been asking questions, WHAT AM I GOING TO DO!!!???',
+        'es': 'La policía ha estado preguntando cosas, ¿¡QUÉ VOY A HACER!?'
       },
-      "waitTime": 6
+      'waitTime': 6
     },
     28: {
-      "number": 2,
-      "text": {
-        "en": "...maybe she deserved it...but..who am I to judge?",
-        "es": "Tranquila, sabes que él lo merecía"
+      'number': 2,
+      'text': {
+        'en': 'Reassure yourself, you know he deserved it',
+        'es': 'Tranquila, sabes que él lo merecía'
       },
-      "waitTime": 7
+      'waitTime': 7
     },
     29: {
-      "number": 1,
-      "text": {
-        "en": "She didn't deserve it...",
-        "es": "Tengo que...confesar...te...tengo que..."
+      'number': 1,
+      'text': {
+        'en': 'I have to...confess...I...I have to...',
+        'es': 'Tengo que...confesar...te...tengo que...'
       },
-      "waitTime": 3
+      'waitTime': 3
     },
     30: {
-      "number": 0,
-      "text": {
-        "en": "...oh...what I've done?",
-        "es": "¿Qué he hecho? ¿¡QUÉ HE HECHOOO!?"
+      'number': 0,
+      'text': {
+        'en': 'What have I done? WHAT HAVE I DONE!!!???',
+        'es': '¿Qué he hecho? ¿¡QUÉ HE HECHOOO!?'
       },
-      "waitTime": 3
+      'waitTime': 3
     }
   };
 };
 
 BasicGame.Days.prototype.getDay = function (dayIndex) {
-  if (!this.days[dayIndex]) return { "number": "???" };
+  if (!this.days[dayIndex]) return { 'number': '???' };
   return this.days[dayIndex];
 };
 },{"BasicGame":1}],4:[function(require,module,exports){
@@ -350,9 +350,10 @@ BasicGame.Eye = function (game, gameObj) {
   this.PATTERNS = [
     [[0, 3, 1], [3, 6, 2], [6, 0, 1]], // this will be always the first pattern
     [[0, 1, 0.5], [1, 4, 1], [4, 2, 1], [2, 5, 2], [5, 0, 1]],
-    [[0, 3, 0.2], [3, 6, 0.4], [6, 0, 0.2]],
+    [[0, 3, 0.5], [3, 6, 0.6], [6, 0, 0.5]],
     [[0, 4, 0.5], [4, 1, 1], [1, 5, 1], [5, 2, 2], [2, 0, 1]]
   ];
+  this.FIRST_PATTERN_INDEX = 0;
 
   // destroyable objects
   this.eye = null;
@@ -401,10 +402,12 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
   this.eye.originalX = this.eye.x;
   this.eye.originalY = this.eye.y;
   this.eye.anchor.setTo(0.5, 0.5);
+  this.eye.frame = 3;
 
   // add the  sprite of the pupil
   this.pupil = this.game.add.image(this.eye.x, this.eye.y + 25, 'pupil');
   this.pupil.anchor.setTo(0.5, 0.5);
+  this.pupil.alpha = 0;
 
   // create the mask for the pupil
   this.pupilMask = this.game.add.graphics(this.eye.x - 95.77, this.eye.y);
@@ -587,7 +590,11 @@ BasicGame.Eye.prototype.shutdown = function () {
  * Method that checks if the player is inside the view zone of the EYE.
  */
 BasicGame.Eye.prototype.isPlayerInsideViewZone = function () {
-  if (this.viewZone.alpha > 0) {
+  if (this.viewZone.alpha > 0 &&
+    this.playerObj.playerSprite.centerX > 0 &&
+    this.playerObj.playerSprite.centerX < this.game.world.width &&
+    this.playerObj.playerSprite.centerY > 0 &&
+    this.playerObj.playerSprite.centerY < this.game.world.height) {
     if ((this.playerObj.playerSprite.right >= this.viewZone.left + this.playerObj.playerSprite.width) &&
       this.playerObj.playerSprite.right < this.viewZone.right) {
       return true;
@@ -668,7 +675,7 @@ BasicGame.Eye.prototype.setPattern = function () {
   this.patternReversed = Math.random() > 0.5 ? true : false;
 
   if (this.usedPatterns === 0) {
-    this.currentPatternIdIndex = 0;
+    this.currentPatternIdIndex = this.FIRST_PATTERN_INDEX;
     this.currentPatternId = this.currentPatternIdIndex;
 
     // at level start, init the search in the opposite direction of player's spawn
@@ -861,39 +868,46 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
   this.calmDownTimer.start();
 };
 
-BasicGame.Eye.prototype.levelStart = function () {
+BasicGame.Eye.prototype.levelStart = function (levelRestarted) {
   this.levelEnded = false;
   this.shooting = false;
   this.usedPatterns = 0;
   this.currentPatternCompleted = true;
   this.destroyTimers();
+  this.stopEyeTweens();
 
-  this.initSearch();
+  if (levelRestarted === true) {
+    this.initSearch();
+  }
 };
 
 BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
-  // this event is called when the level has been ended and all is in darkness (saving progress... message)
-  if (this.levelEnded === true) {
-    return;
-  }
-
   this.levelEnded = true;
   this.searching = false;
   this.shooting = false;
   this.usedPatterns = 0
   this.currentPatternCompleted = true;
+  this.currentPattern = null;
+  this.currentPatternId = null;
+  this.currentPatternIdIndex = -1;
+  this.currentPatternStep = 0;
+
   this.destroyTimers();
   this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.gameInDarkness = function () {
-  this.eye.frame = 0;
+  this.eye.frame = 3;
   this.viewZone.x = this.viewZone.positions['0'];
+  this.viewZone.alpha = 0;
   this.pupil.x = this.pupilImagePositions['0'];
-  this.levelEnded = true;
+  this.pupil.alpha = 0;
+  this.invisibleZoneImage.alpha = 0;
 
   this.destroyTimers();
   this.stopEyeTweens();
+
+  this.levelEnded = true;
 };
 
 BasicGame.Eye.prototype.destroyTimers = function () {
@@ -1019,7 +1033,7 @@ BasicGame.Eye.prototype.restartLevel = function () {
   this.levelEnded = true;
 
   this.destroyTimers();
-  this.stopEyeTweens(true);
+  this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
@@ -1032,11 +1046,12 @@ BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
 
   if (resetPosition === true) {
     this.viewZone.x = this.viewZone.positions['0'];
-    this.viewZone.alpha = 1;
     this.pupil.x = this.pupilImagePositions['0'];
-    this.pupil.alpha = 1;
-    this.invisibleZoneImage.alpha = .5;
   }
+
+  this.viewZone.alpha = 0;
+  this.invisibleZoneImage.alpha = 0;
+  this.pupil.alpha = 0;
 };
 
 BasicGame.Eye.prototype.drawLinesToTarget = function (target) {
@@ -2093,9 +2108,10 @@ BasicGame.Player = function (game, input, gameObj) {
   this.walkInAirTimer = null;
   this.fontId = 'font';
   this.dialogueDisplayed = false;
-  this.flipDialogue = false;
+  this.flipDialogueH = false;
   this.dialogueFadeOutStarted = false;
   this.jumpFeedbackStarted = false;
+  this.dialogueMarkHeight = null;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // define movement constants
@@ -2285,6 +2301,7 @@ BasicGame.Player.prototype.create = function (level) {
 
   this.dialogueMark = this.game.add.image(0, 0, 'dialogue_mark', 0, this.dialogueGroup);
   this.dialogueMark.y = this.dialogueBackground.height + 8;
+  this.dialogueMarkHeight = this.dialogueMark.height;
 
   // create the bitmap for the day phrase
   this.dialogueText = this.game.add.bitmapText(0, 0, this.fontId, '', 18, this.dialogueGroup);
@@ -2362,12 +2379,17 @@ BasicGame.Player.prototype.update = function () {
     this.duckTweenPlaying = false;
   }
 
-  if (this.dialogueDisplayed === true && this.dialogueFadeOutStarted === false &&
-    (leftPressed || rightPressed || upPressed)) {
-    // if the player is moving and the dialogue box is visible, start the timer
-    // to fade it out
-    this.dialogueFadeOutStarted = true;
-    this.gameObj.helper.timer(this.waitTime, this.hideDialogue, this);
+  if (leftPressed || rightPressed || upPressed) {
+    if (this.dialogueDisplayed === true && this.dialogueFadeOutStarted === false) {
+      // if the player is moving and the dialogue box is visible, start the timer
+      // to fade it out
+      this.dialogueFadeOutStarted = true;
+      this.gameObj.helper.timer(this.waitTime, this.hideDialogue, this);
+    }
+
+    if (this.gameObj.eye.eye.frame === 3) {
+      this.gameObj.eye.initSearch();
+    }
   }
 
   if (this.playerSprite.touchingPiece === false) {
@@ -2926,13 +2948,19 @@ BasicGame.Player.prototype.gameInDarkness = function () {
 };
 
 BasicGame.Player.prototype.placeDialogueGroup = function () {
-  if (this.flipDialogue === true) {
+  if (this.flipDialogueH === true) {
     this.dialogueGroup.x = this.playerSprite.centerX - this.dialogueGroup.width + 16;
   }
   else {
     this.dialogueGroup.x = this.playerSprite.centerX;
   }
-  this.dialogueGroup.y = this.playerSprite.top - this.dialogueGroup.height - 6.8;
+
+  if (this.flipDialogueV === true) {
+    this.dialogueGroup.y = this.playerSprite.bottom + 6.8;
+  }
+  else {
+    this.dialogueGroup.y = this.playerSprite.top - 6.8 - this.dialogueGroup.height;
+  }
 };
 
 BasicGame.Player.prototype.showDialogue = function (immediateHide) {
@@ -2945,16 +2973,33 @@ BasicGame.Player.prototype.showDialogue = function (immediateHide) {
     this.dialogueText.text = dayObj.text[BasicGame.language];
     this.dialogueBackground.height = this.dialogueText.textHeight + this.DIALOGUE_TEXT_V_PADDING * 2;
     this.dialogueMark.y = this.dialogueBackground.height + 8;
-    dialogueHeight = this.dialogueMark.bottom;
+    dialogueHeight = this.dialogueBackground.height + 8 + this.dialogueMarkHeight;
     this.game.world.bringToTop(this.dialogueGroup);
 
     if (this.DIALOGUE_WIDTH + this.playerSprite.centerX > this.game.width) {
-      this.flipDialogue = true;
+      this.flipDialogueH = true;
       this.dialogueMark.x = this.DIALOGUE_WIDTH - 18;
     }
     else {
-      this.flipDialogue = false;
+      this.flipDialogueH = false;
       this.dialogueMark.x = 0;
+    }
+
+    if (this.playerSprite.top - 6.8 - dialogueHeight <= 0) {
+      this.flipDialogueV = true;
+      this.dialogueMark.scale.set((this.flipDialogueH === true) ? -1 : 1, -1);
+      this.dialogueMark.bottom = 0;
+      this.dialogueBackground.top = this.dialogueMark.y + 8;
+      this.dialogueText.top = this.dialogueBackground.top + this.DIALOGUE_TEXT_V_PADDING;
+      this.dialogueGroup.y = this.playerSprite.bottom + 6.8;
+    }
+    else {
+      this.flipDialogueV = false;
+      this.dialogueMark.scale.set((this.flipDialogueH === true) ? -1 : 1, 1);
+      this.dialogueBackground.y = 0;
+      this.dialogueText.y = this.DIALOGUE_TEXT_V_PADDING;
+      this.dialogueMark.y = this.dialogueBackground.height + 8;
+      this.dialogueGroup.y = this.playerSprite.top - dialogueHeight - 6.8;
     }
 
     this.dialogueGroup.alpha = 0;
@@ -3072,104 +3117,6 @@ BasicGame.Boot.prototype.update = function () {
 },{"BasicGame":1}],12:[function(require,module,exports){
 var BasicGame = require('BasicGame');
 
-BasicGame.Credits = function (game) {
-  this.mainMenuKey1 = Phaser.Keyboard.Z;
-  this.mainMenuKey2 = Phaser.Keyboard.SPACEBAR;
-  this.goingToMainMenu = false;
-  this.fontId = 'font';
-  this.creditsImage = null;
-  this.creditsMusic = null;
-  this.showCreditsTimer = null;
-};
-
-BasicGame.Credits.prototype.preload = function(){
-  this.load.image('credits', 'assets/images/credits-min.png');
-};
-
-BasicGame.Credits.prototype.create = function(){
-  var _self = this;
-
-  // set the default values for some properties of the state
-  this.goingToGame = false;
-
-  // set the backgound color
-  this.game.stage.backgroundColor = 0x000000;
-
-  // load the image that has the credits
-  this.creditsImage = this.game.add.image(0,
-    this.game.world.height - 200,
-    'credits');
-
-  // add the game title
-  this.gameTitle = this.game.add.image(this.game.world.width / 2,
-    this.game.world.height / 2, 'title');
-  this.gameTitle.anchor.set(0.5, 0.5);
-  this.gameTitle.alpha = 0;
-
-  var tapa = new Phaser.BitmapData(this.game,
-    'credits_tapa',
-    this.game.width,
-    this.game.height);
-  tapa.ctx.rect(0, 0, this.game.width, 50);
-  tapa.ctx.fillStyle = '#000';
-  tapa.ctx.fill();
-  this.game.add.sprite(0, this.game.height - 50, tapa);
-
-  this.mainmenuBitmapText = this.add.bitmapText(this.game.world.width - 20,
-    this.game.world.height - 20,
-    this.fontId,
-    "(Z) Main menu / (Z) Menú principal",
-    32,
-    this.textBitmapsGroup);
-  this.mainmenuBitmapText.align = "left";
-  this.mainmenuBitmapText.tint = 0xF2C249;
-  this.mainmenuBitmapText.anchor.set(1, 1);
-
-  // add the credits music
-  if (!this.creditsMusic) {
-    this.creditsMusic = this.game.add.sound('splash_music', 0.8, false);
-    this.creditsMusic.play();
-  }
-  else {
-    this.creditsMusic.play();
-  }
-
-  this.scrollTween = this.game.add.tween(this.creditsImage);
-  this.scrollTween.to({y: -this.creditsImage.height},
-    75 * 1000,
-    null,
-    false);
-
-  this.scrollTween.onComplete.add(function(){
-    // show the game name in the middle of the screen
-    // this.creditsMusic.fadeOut(7000);
-    this.alphaTween = this.game.add.tween(this.gameTitle);
-    this.alphaTween.to({alpha: 1},
-      8000,
-      null,
-      true);
-  }, this);
-
-  this.scrollTween.start();
-};
-
-BasicGame.Credits.prototype.update = function(){
-  if (this.goingToGame === true) {
-    return;
-  }
-
-  if (this.input.keyboard.isDown(this.mainMenuKey1) ||
-      this.input.keyboard.isDown(this.mainMenuKey1)
-  ) {
-    this.goingToGame = true;
-    this.creditsMusic.stop();
-    this.scrollTween.stop();
-    this.state.start('MainMenu');
-  }
-};
-},{"BasicGame":1}],13:[function(require,module,exports){
-var BasicGame = require('BasicGame');
-
 BasicGame.Game = function (game) {
   // constants
   this.LIFES_AMOUNT = 3;
@@ -3177,7 +3124,6 @@ BasicGame.Game = function (game) {
   this.KEY_PAUSE = Phaser.Keyboard.P;
   this.KEY_MUTE = Phaser.Keyboard.M;
   this.KEY_CHAT = Phaser.Keyboard.C;
-  this.GO_TO_NEXT_LEVEL_DELAY
   this.DARKNESS_ALPHA = 1;
   this.GO_TO_NEXT_LEVEL_DELAY = 1500;
   this.PAUSE_WIDTH = 660; // Illustrator
@@ -3505,6 +3451,7 @@ BasicGame.Game.prototype.arrangeRenderLayers = function () {
   }
   this.game.world.bringToTop(this.level.walls);
   this.game.world.bringToTop(this.noiseImage);
+  this.game.world.bringToTop(this.eye.viewZone);
   this.game.world.bringToTop(this.light.lightBitmap);
   this.game.world.bringToTop(this.level.pieces);
   this.game.world.bringToTop(this.lifesGroup);
@@ -3520,20 +3467,6 @@ BasicGame.Game.prototype.inputIsActive = function (key) {
 BasicGame.Game.prototype.levelEnded = function () {
   this.levelCompleted = true;
   BasicGame.isRetrying = false;
-  this.putDarkTween.onComplete.addOnce(function () {
-    // show the Progress saved message
-    this.savingText.alpha = 1;
-    this.game.world.bringToTop(this.savingText);
-
-    this.helper.timer(this.GO_TO_NEXT_LEVEL_DELAY, function () {
-      // set the flag for loading level
-      this.isLoadingLevel = true;
-
-      // notify to the eye that the level was ended
-      this.eye.levelEndedEvent(true);
-      this.loadLevel(++BasicGame.currentLevel);
-    }, this);
-  }, this);
   this.showDarkness();
 };
 
@@ -3705,7 +3638,21 @@ BasicGame.Game.prototype.putDarkTweenCompleted = function () {
 
   this.showLifes();
 
-  if (this.lifes <= 0 && !this.levelCompleted) {
+  if (this.levelCompleted === true) {
+    // show the Progress saved message
+    this.savingText.alpha = 1;
+    this.game.world.bringToTop(this.savingText);
+
+    this.helper.timer(this.GO_TO_NEXT_LEVEL_DELAY, function () {
+      // set the flag for loading level
+      this.isLoadingLevel = true;
+
+      // notify to the eye that the level was ended
+      this.eye.levelEndedEvent(true);
+      this.loadLevel(++BasicGame.currentLevel);
+    }, this);
+  }
+  else if (this.lifes <= 0) {
     this.restartLevel(true);
   }
 };
@@ -3738,7 +3685,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
   }
 
   this.player.enableBody();
-  this.eye.levelStart();
+  this.eye.levelStart(BasicGame.isRetrying);
 };
 
 BasicGame.Game.prototype.restartLevel = function (runHideDarkness) {
@@ -3813,310 +3760,7 @@ BasicGame.Game.prototype.quitGame = function () {
   this.shutdown();
 };
 // ╚═══════════════════════════════════════════════════════════════════════════╝
-},{"BasicGame":1}],14:[function(require,module,exports){
-var BasicGame = require('BasicGame');
-
-BasicGame.GameOver = function(game){
-  this.fontId = 'font';
-
-  this.gameOverBitmap = null;
-  this.gameOverGroup = null;
-
-  this.phraseBitmap = null;
-  this.phraseGroup = null;
-
-  this.tryAgainBitmap = null;
-  this.sPressedFlag = false;
-
-  this.bSpeech = {
-    "a": {
-      "es": "Bill: Pensé que lo había superado.",
-      "en": "Bill: I thought I had overcome this."
-    },
-    "b": {
-      "es": "Bill: Creo que nunca lograré superarlo.",
-      "en": "Bill: I think I'll never be able to get over this."
-    },
-    "c": {
-      "es": "Bill: No puedo más con esto.",
-      "en": "Bill: I can't handle this."
-    }
-  };
-
-  this.hSpeech = {
-    "es": "Hub: Espera...¿Qué vas a hacer?",
-    "en": "Hub: Wait...¿What are you going to do?"
-  };
-
-  this.tryAgainText = {
-    "es": "Reintentar (Barra espaciadora)",
-    "en": "Try again (Spacebar)"
-  };
-  this.tryAgainKey = Phaser.Keyboard.SPACEBAR;
-};
-
-BasicGame.GameOver.prototype.create = function(){
-  // set stage background
-  // this.game.stage.backgroundColor = 0x000;
-  this.background = this.game.add.tileSprite(0, 0,
-    this.game.world.width, this.game.world.height, this.getSkyName());
-  this.background.alpha = 0.3;
-
-  // create the group and text for the "Game Over" text
-  this.gameOverGroup = this.game.add.group();
-  this.dialogTextBitmap = this.add.bitmapText(this.game.world.width/2,
-    this.game.world.height/2 - 20,
-    this.fontId,
-    this.getPhrase(),
-    48,
-    this.gameOverGroup);
-  this.dialogTextBitmap.anchor.set(.5, .5);
-  this.dialogTextBitmap.tint = 0xFFFFFF;
-
-  // create the group and text for the phrase
-  this.phraseGroup = this.game.add.group();
-  this.phraseBitmap = this.add.bitmapText(this.game.world.width/2,
-    this.dialogTextBitmap.bottom + 20,
-    this.fontId,
-    this.hSpeech[BasicGame.language],
-    48,
-    this.phraseGroup);
-  this.phraseBitmap.anchor.set(.5, .5);
-  this.phraseBitmap.tint = 0xFFFF50;
-
-  // create the group and text for Try again
-  this.tryAgainGroup = this.game.add.group();
-  this.tryAgainBitmap = this.game.add.bitmapText(this.game.world.width/2,
-    this.game.world.height/2 + 280,
-    this.fontId,
-    this.tryAgainText[BasicGame.language],
-    36,
-    this.tryAgainGroup);
-  this.tryAgainBitmap.anchor.set(.5, .5);
-  this.tryAgainBitmap.tint = 0xF2C249;
-
-  // add the keyboard listener for Try again
-  this.game.input.keyboard.addKeyCapture([
-    this.tryAgainKey
-  ]);
-};
-
-BasicGame.GameOver.prototype.update = function(){
-  if(this.input.keyboard.isDown(this.tryAgainKey)
-      && this.sPressedFlag == false){
-    BasicGame.isRetrying = true;
-    this.state.start('Game');
-  }else if(!this.input.keyboard.isDown(this.tryAgainKey) && this.sPressedFlag == true){
-    this.sPressedFlag = false;
-  }
-};
-
-BasicGame.GameOver.prototype.getPhrase = function(){
-  if(BasicGame.currentLevel <= 10){
-    return this.bSpeech.a[BasicGame.language];
-  } else if (BasicGame.currentLevel <= 20) {
-    return this.bSpeech.b[BasicGame.language];
-  } else {
-    return this.bSpeech.c[BasicGame.language];
-  }
-};
-
-BasicGame.GameOver.prototype.getSkyName = function(){
-  if(BasicGame.currentLevel <= 10){
-    return 'sky01';
-  } else if (BasicGame.currentLevel <= 20) {
-    return 'sky02';
-  } else {
-    return 'sky03';
-  }
-};
-},{"BasicGame":1}],15:[function(require,module,exports){
-var BasicGame = require('BasicGame');
-
-BasicGame.Intro = function (game) {
-  this.background = null;
-  this.skipKey1 = Phaser.Keyboard.Z;
-  this.skipKey2 = Phaser.Keyboard.SPACEBAR;
-  
-  this.fontId = 'font';
-  this.textColors = {
-    'Hub': 0xFFFF50,
-    'Bill': 0xFFFFFF
-  };
-  this.dialogs = {
-    "es": [
-      {
-        character: 'Hub',
-        text: 'Tienes que calmarte, todo estará bien.',
-        bips: 3
-      },
-      {
-        character: 'Bill',
-        text: '¿Cómo puedes decir eso? No puedo hacerlo!',
-        bips: 3
-      },
-      {
-        character: 'Hub',
-        text: 'Descansa, ya verás cómo en unos días dejará de acecharte.',
-        bips: 5
-      },
-      {
-        character: 'Bill',
-        text: 'Creo que no seré capaz...',
-        bips: 2
-      }
-    ],
-    "en": [
-      {
-        character: 'Hub',
-        text: 'Calm down, all its going to be fine.',
-        bips: 3
-      },
-      {
-        character: 'Bill',
-        text: "How can you say that? I can't do that!",
-        bips: 3
-      },
-      {
-        character: 'Hub',
-        text: 'Have a rest, it will stop haunting you in a few days.',
-        bips: 4
-      },
-      {
-        character: 'Bill',
-        text: "I think I won't be able to handle this...",
-        bips: 3
-      }
-    ]
-  };
-  this.textBitmapsGroup = null;
-  this.dialogTextBitmap = null;
-  this.dialogNumber = 0;
-  this.dialogTween = null;
-
-  this.skipGroup = null;
-  this.skipBitmap = null;
-  this.skipText = {
-    "es": "Siguiente (Z)",
-    "en": "Next (Z)"
-  };
-  this.sPressedFlag = false;
-
-  this.goingToGame = false;
-
-  this.BSound = null;
-  this.HSound = null;
-  this.soundLoopTimer = null;
-};
-
-BasicGame.Intro.prototype.create = function(){
-  // set the backgound
-  this.game.stage.backgroundColor = 0x000000;
-  // this.background = this.game.add.tileSprite(0, 0,
-  //   this.game.world.width, this.game.world.height, "sky03");
-  // this.background.alpha = 0.2;
-
-  // create the group and text for the dialog and the Skip
-  this.textBitmapsGroup = this.game.add.group();
-
-  this.dialogTextBitmap = this.add.bitmapText(this.game.world.width / 2,
-    this.game.world.height / 2,
-    this.fontId,
-    '???',
-    36,
-    this.textBitmapsGroup);
-  this.dialogTextBitmap.align = "left";
-  this.dialogTextBitmap.anchor.set(.5, .5);
-  this.dialogTextBitmap.alpha = 0;
-
-  // create the group and the text for Skip
-  this.skipGroup = this.game.add.group();
-  this.skipBitmap = this.add.bitmapText(this.game.world.width - 20,
-    this.game.world.height - 20,
-    this.fontId,
-    this.skipText[BasicGame.language],
-    32,
-    this.textBitmapsGroup);
-  this.skipBitmap.align = "left";
-  this.skipBitmap.tint = 0xF2C249;
-  this.skipBitmap.anchor.set(1, 1);
-
-  // add the keyboard listener for Skip
-  this.game.input.keyboard.addKeyCapture([
-    this.skipKey1,
-    this.skipKey2
-  ]);
-
-  // create the tween to use in the dialog
-  this.dialogTween = this.game.add.tween(this.dialogTextBitmap);
-  this.dialogTween.to({alpha: 1},
-    300,
-    Phaser.Easing.Quadratic.Out,
-    false);
-
-  // load the sounds of B and H
-  this.BSound = this.game.add.sound('b', 0.2);
-  this.HSound = this.game.add.sound('h', 0.2);
-
-  // show the first dialog
-  this.updateDialog();
-};
-
-BasicGame.Intro.prototype.update = function(){
-  if (this.goingToGame === true){
-    return;
-  }
-
-  if ((this.input.keyboard.isDown(this.skipKey1) ||
-      this.input.keyboard.isDown(this.skipKey2)) && this.sPressedFlag == false){
-    this.sPressedFlag = true;
-    this.dialogTween.onComplete.dispatch(this.dialogTween.target, this.dialogTween);
-    // this.dialogTextBitmap.alpha = 1;
-    this.updateDialog();
-  }
-  else if ((!this.input.keyboard.isDown(this.skipKey1) ||
-            !this.input.keyboard.isDown(this.skipKey2)) && this.sPressedFlag == true
-  ){
-    this.sPressedFlag = false;
-  }
-};
-
-BasicGame.Intro.prototype.updateDialog = function(){
-  if (this.dialogNumber <= this.dialogs[BasicGame.language].length - 1){
-    var dialogObj = this.dialogs[BasicGame.language][this.dialogNumber];
-    // there are still dialogs to be shown
-    var currentDialogLine = dialogObj.text;
-    var character = dialogObj.character;
-
-    this.dialogTextBitmap.tint = this.textColors[character];
-    this.dialogTextBitmap.setText(character + ': ' + currentDialogLine);
-
-    this.dialogTextBitmap.alpha = 0;
-    this.dialogTween.start();
-
-    // play the bips of the dialog
-    if (dialogObj.bips > 0) {
-      this.soundLoopTimer = this.game.time.create(true);
-      this.soundLoopTimer.repeat(100, dialogObj.bips, function(){
-        this[dialogObj.character.charAt(0) + "Sound"].play();
-      }, this);
-      this.soundLoopTimer.start();
-    }
-
-    this.dialogNumber++;
-  }else{
-    // tween the dialog bitmap to alpha = 0, then, start the game.
-    this.goingToGame = true;
-    this.game.add.tween(this.textBitmapsGroup).to({alpha: 0},
-      500,
-      Phaser.Easing.Quadratic.Out,
-      true)
-      .onComplete.add(function(){
-        this.state.start('Game');
-      },this);
-  }
-};
-},{"BasicGame":1}],16:[function(require,module,exports){
+},{"BasicGame":1}],13:[function(require,module,exports){
 var BasicGame = require('BasicGame');
 
 BasicGame.MainMenu = function (game) {
@@ -4144,12 +3788,14 @@ BasicGame.MainMenu = function (game) {
   this.KEYS_DESCRIPTION_MSG = {
     'es': 'usa A y D o IZQUIERA y DERECHA para moverte\n' +
       'usa W, Z, ESPACIO o ARRIBA para saltar\n' +
-      'usa C para ver los diálogos\n' +
-      'toma las píldoras para superar el día',
+      'usa C para ver los diálogos, M para silencia y P para pausar\n' +
+      'toma todas las píldoras para superar el día\n' +
+      'la partida se guardará al inicio de cada nivel',
     'en': 'use A and D or LEFT and RIGHT to move\n' +
       'use W, Z, SPACE or UP to jump\n' +
-      'use C to show the dialogues' +
-      'take pills to get over the day'
+      'use C to show the dialogues, M to mute and P to pause\n' +
+      'take all the pills to get over the day\n' +
+      'you progress will be saved at the start of each level'
   };
   this.CONTINUE_DAY_MSG = {
     'es': 'Día',
@@ -4228,7 +3874,7 @@ BasicGame.MainMenu.prototype.create = function () {
   this.keysDescriptionText.align = 'center';
   this.keysDescriptionText.tint = 0x303c42;
   this.keysDescriptionText.x = this.game.world.width / 2;
-  this.keysDescriptionText.bottom = this.game.world.height - this.SCREEN_PADDING;
+  this.keysDescriptionText.bottom = this.game.world.height - this.SCREEN_PADDING / 2;
   this.keysDescriptionText.alpha = 0;
 
   this.translatableTexts.push({
@@ -4257,7 +3903,7 @@ BasicGame.MainMenu.prototype.create = function () {
 };
 
 BasicGame.MainMenu.prototype.update = function () {
-  // this.followPointer();
+  this.followPointer();
 };
 
 /**
@@ -4295,12 +3941,12 @@ BasicGame.MainMenu.prototype.createOptionsGroup = function () {
       hSpace: 0,
       vSpace: 1,
       group: this.optionsGroup,
-      overCallback: (function() {
+      overCallback: (function () {
         if (BasicGame.currentLevel <= 30) {
           this.showKeysDescription(true);
         }
       }).bind(this),
-      outCallback: (function() {
+      outCallback: (function () {
         if (BasicGame.currentLevel <= 30) {
           this.showKeysDescription(false);
         }
@@ -4557,7 +4203,6 @@ BasicGame.MainMenu.prototype.createCreditsGroup = function (newLang) {
   var backgroundImage = null;
   var englishImage = null;
   var spanishImage = null;
-  var socialImage = null;
 
   this.creditsGroup = this.game.add.group();
 
@@ -4570,11 +4215,6 @@ BasicGame.MainMenu.prototype.createCreditsGroup = function (newLang) {
 
   spanishImage = this.game.add.image(this.game.world.width / 2, 32, 'credits_en', 0, this.creditsGroup);
   spanishImage.anchor.set(.5, 0);
-
-  social = this.game.add.image(this.game.world.width / 2,
-    this.game.world.height - 16,
-    'social', 0, this.creditsGroup);
-  social.anchor.set(.5, 1);
 
   this.closeButton = this.game.add.button(this.game.world.width - 32, 32,
     'close', function (button, pointer, isOver) {
@@ -4640,10 +4280,10 @@ BasicGame.MainMenu.prototype.getDayString = function (newLang) {
     return this.CONTINUE_DAY_MSG[BasicGame.language] +
       ' ' + days.getDay(BasicGame.currentLevel).number;
   }
-  
+
   return this.END_SCENE_MSG[BasicGame.language];
 };
-},{"BasicGame":1}],17:[function(require,module,exports){
+},{"BasicGame":1}],14:[function(require,module,exports){
 var BasicGame = require('BasicGame');
 
 BasicGame.Preloader = function (game) {
@@ -4669,7 +4309,6 @@ BasicGame.Preloader.prototype.preload = function () {
 
   //  --------------------------------------
   //  ---| load the assets for the Main menu
-  // this.load.image('title', 'assets/images/title.png');
   this.load.image('main_menu_background', 'assets/sprites/main_menu_background.png');
   this.load.image('button_background', 'assets/sprites/button_background.png');
   this.load.image('giant_pupil', 'assets/sprites/giant_pupil.png');
@@ -4677,7 +4316,6 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('credits_background', 'assets/sprites/credits_background.png');
   this.load.image('credits_en', 'assets/sprites/credits_en.png');
   this.load.image('credits_es', 'assets/sprites/credits_es.png');
-  this.load.image('social', 'assets/sprites/social.png');
 
   this.load.audio('splash_music', 'assets/music/splash_music.ogg', true);
 
@@ -4698,7 +4336,7 @@ BasicGame.Preloader.prototype.preload = function () {
 
   // this.load.spritesheet('noise', 'assets/sprites/noise.png', 1024, 640);
   this.load.spritesheet('player', 'assets/sprites/player.png', 32, 32, 1);
-  this.load.spritesheet('eye', 'assets/sprites/eye.png', 222, 118, 3);
+  this.load.spritesheet('eye', 'assets/sprites/eye.png', 222, 118, 4);
   this.load.spritesheet('checkbox', 'assets/sprites/checkbox.png', 24, 24, 2);
   this.load.spritesheet('mute', 'assets/sprites/mute.png', 24, 24, 2);
   this.load.spritesheet('pause', 'assets/sprites/pause.png', 24, 24, 2);
@@ -4756,7 +4394,7 @@ BasicGame.Preloader.prototype.update = function () {
   }
 };
 
-},{"BasicGame":1}],18:[function(require,module,exports){
+},{"BasicGame":1}],15:[function(require,module,exports){
 var BasicGame = require('BasicGame');
 
 BasicGame.TheEnd = function (game) {
@@ -4944,5 +4582,5 @@ BasicGame.TheEnd.prototype.createButton = function (prop) {
   this.buttonGroup.addChild(nextButton);
   this.buttonGroup.addChild(nextText);
 };
-},{"BasicGame":1}]},{},[11,12,13,14,15,16,17,18,3,4,5,6,7,8,9,10,2])
+},{"BasicGame":1}]},{},[11,12,13,14,15,3,4,5,6,7,8,9,10,2])
 //# sourceMappingURL=itsgame.js.map
