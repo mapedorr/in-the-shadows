@@ -944,18 +944,13 @@ BasicGame.Eye.prototype.rejoice = function (callback) {
   this.invisibleZoneImage.alpha = 0;
 
   shakeTween = this.game.add.tween(this.eye);
-  shakeTween.to({ y: this.eye.originalY + 10 },
-    150,
-    null,
-    false,
-    0,
-    4,
-    true).start();
+  shakeTween.to({ y: this.eye.originalY + 10 }, 150, null, false, 0, 4, true);
   shakeTween.onComplete.add(function () {
     this.eye.y = this.eye.originalY;
     this.laughSound.stop();
     callback();
   }, this);
+  shakeTween.start();
 
   this.laughSound.play();
 };
@@ -977,6 +972,10 @@ BasicGame.Eye.prototype.getTired = function () {
   this.getMadTimer = this.game.time.create(true);
   this.getMadTimer.add(1200,
     function () {
+      if (this.levelEnded === true) {
+        return;
+      }
+
       this.getMad();
     },
     this);
@@ -988,21 +987,21 @@ BasicGame.Eye.prototype.getTired = function () {
  * restarts the seeking for the player.
  */
 BasicGame.Eye.prototype.getMad = function () {
-  var shakeTween = this.game.add.tween(this.eye);
+  this.madTween = this.game.add.tween(this.eye);
 
   // play the angry animation and the sound linked to it
   this.eye.frame = 2;
   this.angerSound.play();
 
   // shake the world
-  shakeTween.to({ x: this.eye.originalX + 10 },
+  this.madTween.to({ x: this.eye.originalX + 10 },
     40,
     Phaser.Easing.Sinusoidal.InOut,
     false,
     0,
     4,
     true);
-  shakeTween.onComplete.addOnce(function () {
+  this.madTween.onComplete.addOnce(function () {
     // restart the search after a while
     this.searchAgain = this.game.time.create(true);
     this.searchAgain.add(this.RESTART_SEARCH_DELAY,
@@ -1016,7 +1015,7 @@ BasicGame.Eye.prototype.getMad = function () {
       this);
     this.searchAgain.start();
   }, this);
-  shakeTween.start();
+  this.madTween.start();
 
 };
 
@@ -1042,6 +1041,12 @@ BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
     this.pupilMovementTween.onComplete.removeAll();
     this.viewZoneMovementTween.stop();
     this.pupilMovementTween.stop();
+  }
+
+  if (this.madTween && this.madTween.isRunning) {
+    this.madTween.onComplete.removeAll();
+    this.madTween.stop();
+    this.eye.x = this.eye.originalX;
   }
 
   if (resetPosition === true) {
@@ -1158,13 +1163,13 @@ BasicGame.Level = function (game, gameObj) {
   // destroyable objects
   this.levelTextGroup = null;
   this.dayNumberText = null;
-  this.daySound = null;
   this.spikeSound = null;
   this.map = null;
   this.ground = null;
   this.walls = null;
   this.spikes = null;
   this.pieces = null;
+  this.spikeSound = null;
 
   // global properties
   this.game = game;
@@ -1182,9 +1187,6 @@ BasicGame.Level = function (game, gameObj) {
   this.fontId = 'font-medium';
   this.hasFloor = false;
   this.hasSpikes = false;
-
-  this.daySound = null;
-  this.spikeSound = null;
 };
 
 BasicGame.Level.prototype.create = function () {
@@ -1202,10 +1204,6 @@ BasicGame.Level.prototype.create = function () {
   this.dayNumberText.align = "center";
   this.dayNumberText.tint = 0x8d8d8e;
   this.dayNumberText.oriY = this.dayNumberText.y;
-
-  if (!this.daySound) {
-    this.daySound = this.game.add.sound('day', 0.15);
-  }
 
   if (!this.spikeSound) {
     this.spikeSound = this.game.add.sound('spike', 0.2);
@@ -1332,35 +1330,6 @@ BasicGame.Level.prototype.render = function () {
       });
     }
   }
-};
-
-BasicGame.Level.prototype.showDay = function () {
-  // if (this.isShowingDays === true) {
-  //   return;
-  // }
-
-  // this.isShowingDays = true;
-
-  // this.levelTextGroup.getChildAt(0).alpha = 1;
-  // this.levelTextGroup.alpha = 1;
-
-  // this.game.world.bringToTop(this.levelTextGroup);
-
-  // this.daySound.play();
-
-  /* // create the timer
-  var dayTimer = this.game.time.create(true);
-
-  // set the timer to stop showing the day
-  var currentDayObj = this.gameObj.days.getDay(BasicGame.currentLevel);
-  dayTimer.add((currentDayObj.waitTime || 2) * 1000,
-    function () {
-      this.levelTextGroup.alpha = 0;
-      this.isShowingDays = false;
-      this.gameObj.hideDarkness();
-    },
-    this);
-  dayTimer.start(); */
 };
 
 BasicGame.Level.prototype.addWidthSpike = function (platformSprite, inBottom) {
@@ -1514,7 +1483,6 @@ BasicGame.Level.prototype.restartLevel = function () {
 BasicGame.Level.prototype.shutdown = function () {
   this.levelTextGroup.destroy();
   this.dayNumberText.destroy();
-  this.daySound.destroy();
   this.spikeSound.destroy();
   this.map.destroy();
   this.ground.destroy();
@@ -3545,7 +3513,7 @@ BasicGame.Game.prototype.subtractLife = function () {
   var that = this;
 
   // if the player collected all the pieces, don't kill him
-  if (this.level.endTimer) {
+  if (this.levelCompleted === true) {
     return;
   }
 
@@ -3589,7 +3557,7 @@ BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
   var lifeTween = null;
 
   // if the player collected all the pieces, don't kill him
-  if (this.level.endTimer) {
+  if (this.levelCompleted === true) {
     return;
   }
 
@@ -3602,7 +3570,7 @@ BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
     Phaser.Easing.Quadratic.Out,
     true);
 
-  this.eye.levelEndedEvent(false);
+  // this.eye.levelEndedEvent(false);
 
   if (destroyPlayer) {
     // play the animation of death of the player
@@ -4317,7 +4285,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('credits_en', 'assets/sprites/credits_en.png');
   this.load.image('credits_es', 'assets/sprites/credits_es.png');
 
-  this.load.audio('splash_music', 'assets/music/splash_music.ogg', true);
+  this.load.audio('splash_music', 'assets/audio/music/splash_music.ogg', true);
 
   //  ---------------------------------
   //  ---| load the assets for the Game
@@ -4341,19 +4309,16 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.spritesheet('mute', 'assets/sprites/mute.png', 24, 24, 2);
   this.load.spritesheet('pause', 'assets/sprites/pause.png', 24, 24, 2);
 
-  this.load.audio('b', 'assets/soundfx/b.ogg', true);
-  this.load.audio('h', 'assets/soundfx/h.ogg', true);
-  this.load.audio('jump', 'assets/soundfx/jump.ogg', true);
-  this.load.audio('walk', 'assets/soundfx/walk.ogg', true);
-  this.load.audio('slide', 'assets/soundfx/slide.ogg', true);
-  this.load.audio('fall', 'assets/soundfx/fall.ogg', true);
-  this.load.audio('death', 'assets/soundfx/death.ogg', true);
-  this.load.audio('day', 'assets/soundfx/day.ogg', true);
-  this.load.audio('ray', 'assets/soundfx/ray.ogg', true);
-  this.load.audio('eye', 'assets/soundfx/eye.ogg', true);
-  this.load.audio('eye-anger', 'assets/soundfx/anger.ogg', true);
-  this.load.audio('level_music', 'assets/music/levels_music.ogg', true);
-  this.load.audio('piece', 'assets/soundfx/piece01.ogg', true);
+  this.load.audio('jump', 'assets/audio/sfx/jump.ogg', true);
+  this.load.audio('walk', 'assets/audio/sfx/walk.ogg', true);
+  this.load.audio('slide', 'assets/audio/sfx/slide.ogg', true);
+  this.load.audio('fall', 'assets/audio/sfx/fall.ogg', true);
+  this.load.audio('death', 'assets/audio/sfx/death.ogg', true);
+  this.load.audio('ray', 'assets/audio/sfx/ray.ogg', true);
+  this.load.audio('eye', 'assets/audio/sfx/eye.ogg', true);
+  this.load.audio('eye-anger', 'assets/audio/sfx/anger.ogg', true);
+  this.load.audio('level_music', 'assets/audio/music/levels_music.ogg', true);
+  this.load.audio('piece', 'assets/audio/sfx/piece01.ogg', true);
 
   this.load.bitmapFont('font', 'assets/fonts/FiraCode_0.png',
     'assets/fonts/FiraCode.fnt', null);
@@ -4372,7 +4337,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('spike-r', 'assets/sprites/spike-r.png');
   this.load.image('spike-l', 'assets/sprites/spike-l.png');
   this.load.image('spike-d', 'assets/sprites/spike-d.png');
-  this.load.audio('spike', 'assets/soundfx/spike.ogg', true);
+  this.load.audio('spike', 'assets/audio/sfx/spike.ogg', true);
 
   levelData = BasicGame.Helper.prototype.getLevelIdAndName(BasicGame.currentLevel);
   this.game.load.tilemap(levelData.id,
@@ -4426,6 +4391,10 @@ BasicGame.TheEnd = function (game) {
     'end_scene_p2v2',
     'end_scene_p2v3'
   ];
+  this.THANKS_MSG = {
+    'es': 'gracias por jugar',
+    'en': 'thanks for playing'
+  };
 
   // destroyable objects (sprites, sounds, groups, tweens...)
   this.background = null;
@@ -4433,6 +4402,7 @@ BasicGame.TheEnd = function (game) {
   this.buttonGroup = null;
   this.footerText = null;
   this.music = null;
+  this.thanksText = null;
 
   // global properties
   this.currentPanelIndex = 0;
@@ -4441,7 +4411,7 @@ BasicGame.TheEnd = function (game) {
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║ PHASER STATE METHODS                                                     ║
-BasicGame.TheEnd.prototype.preload = function() {
+BasicGame.TheEnd.prototype.preload = function () {
   if (BasicGame.language === 'es') {
     this.load.image(this.PANELS_KEYS[0], 'assets/sprites/end_es_1-1.png');
     this.load.image(this.PANELS_KEYS[1], 'assets/sprites/end_es_1-2.png');
@@ -4459,7 +4429,7 @@ BasicGame.TheEnd.prototype.preload = function() {
     this.load.image(this.PANELS_KEYS[5], 'assets/sprites/end_en_2-3.png');
   }
 
-  this.load.audio('exit_music', 'assets/music/the_end.ogg', true);
+  this.load.audio('exit_music', 'assets/audio/music/the_end.ogg', true);
 };
 
 BasicGame.TheEnd.prototype.create = function () {
@@ -4511,6 +4481,7 @@ BasicGame.TheEnd.prototype.create = function () {
 
   // play the music
   this.music = this.game.add.sound('exit_music', 0.1, true);
+  this.music.play();
 
   // init the animations for the first page
   this.currentPanelIndex = 0;
@@ -4530,6 +4501,7 @@ BasicGame.TheEnd.prototype.shutdown = function () {
   this.buttonGroup.destroy();
   this.footerText.destroy();
   this.music.destroy();
+  this.thanksText.destroy();
 };
 // ║                                                                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -4538,11 +4510,12 @@ BasicGame.TheEnd.prototype.showPanel = function () {
 
   if (this.currentPanelIndex > 2) {
     if (this.currentPanelIndex > 5) {
-      // show main menu button
+      // show another next button
       this.createButton({
-        buttonText: this.MAINMENU_MSG[BasicGame.language],
+        buttonText: this.NEXT_MSG[BasicGame.language],
         clickCallback: function () {
-          this.state.start('MainMenu');
+          this.buttonGroup.destroy();
+          this.showThanks();
         }
       });
       return;
@@ -4554,13 +4527,13 @@ BasicGame.TheEnd.prototype.showPanel = function () {
       return;
     }
   }
-  
+
   fadeTween = this.game.add.tween(this.panelsGroup.children[this.currentPanelIndex++]);
   fadeTween.to({ alpha: 1 }, this.FADEIN_DELAY, Phaser.Easing.Quadratic.Out, false);
   fadeTween.onComplete.addOnce(function () {
     this.game.time.create(this.game, true)
-    .add(this.NEXT_PANEL_DELAY, this.showPanel, this)
-    .timer.start(100);
+      .add(this.NEXT_PANEL_DELAY, this.showPanel, this)
+      .timer.start(100);
   }, this);
   fadeTween.start();
 };
@@ -4581,6 +4554,24 @@ BasicGame.TheEnd.prototype.createButton = function (prop) {
 
   this.buttonGroup.addChild(nextButton);
   this.buttonGroup.addChild(nextText);
+};
+
+BasicGame.TheEnd.prototype.showThanks = function () {
+  this.footerText.alpha = 0;
+  this.panelsGroup.alpha = 0;
+
+  this.thanksText = this.game.add.bitmapText(this.game.world.width / 2,
+    this.game.world.height / 2,
+    this.FONT_MEDIUM, this.THANKS_MSG[BasicGame.language], 32);
+  this.thanksText.anchor.set(.5, .5);
+
+  // show main menu button
+  this.createButton({
+    buttonText: this.MAINMENU_MSG[BasicGame.language],
+    clickCallback: function () {
+      this.state.start('MainMenu');
+    }
+  });
 };
 },{"BasicGame":1}]},{},[11,12,13,14,15,3,4,5,6,7,8,9,10,2])
 //# sourceMappingURL=itsgame.js.map
