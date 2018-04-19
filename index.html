@@ -26,6 +26,15 @@
   <script src="js/phaser.min.js"></script>
   <script src="js/phaser-debug.js"></script>
   <script src="js/itsgame.js"></script>
+  <script type="text/javascript">
+    // prevents key presses from bubbling out to the browser window
+    var ignore_keycodes = [32,37,38,39,40,65,68,83,87,90];
+    window.addEventListener('keydown', function(e) {
+        if (ignore_keycodes.indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    });
+</script> 
 
 </body>
 
