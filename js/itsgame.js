@@ -1,7 +1,7 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var BasicGame = {
   language: "es",
-  currentLevel: 1,
+  currentLevel: 6,
   deaths: 0,
   rest: 0,
   setLanguage: function (newLanguage) {
@@ -3496,6 +3496,22 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
       this.background.loadTexture(skyName);
     }
 
+    if (levelNumber === 7) {
+      this.music.onFadeComplete.addOnce(function () {
+        this.music.destroy();
+        this.music = null;
+
+        if (levelNumber === 7) {
+          // change the music to lvl_7-10
+          this.music = this.game.add.sound('lvl_7-10', 1, true);
+          this.music.play();
+        }
+      }, this);
+
+      this.musicUpdated = true;
+      this.music.fadeOut(1000);
+    }
+
     this.savingText.alpha = 0;
     this.level.createLevel(levelNumber);
   }, this);
@@ -3506,22 +3522,9 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
     Phaser.Tilemap.TILED_JSON);
 
   if (levelNumber === 7) {
-    this.music.onFadeComplete.addOnce(function () {
-      this.music.destroy();
-
-      if (levelNumber === 7) {
-        // change the music to lvl_7-10
-        this.music = this.game.add.sound('lvl_7-10', 1, true);
-        this.music.play();
-      }
-    }, this);
-
     if (this.game.cache.checkSoundKey('lvl_7-10') === false) {
       this.load.audio('lvl_7-10', 'assets/audio/music/lvl_7-10.mp3', true);
     }
-
-    this.musicUpdated = true;
-    this.music.fadeOut(1000);
   }
 
   // start loading the assets
@@ -3732,7 +3735,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 
   // make the EYE seek for the player
 
-  if (this.music.isPlaying === false) {
+  if (this.music && this.music.isPlaying === false) {
     this.music.play();
   }
 
