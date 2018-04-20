@@ -1,7 +1,7 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var BasicGame = {
   language: "es",
-  currentLevel: 6,
+  currentLevel: 1,
   deaths: 0,
   rest: 0,
   setLanguage: function (newLanguage) {
@@ -883,26 +883,17 @@ BasicGame.Eye.prototype.levelStart = function (levelRestarted) {
 
   this.destroyTimers();
   this.stopEyeTweens();
-
-  // if (levelRestarted === true) {
-  //   this.initSearch();
-  // }
 };
 
 BasicGame.Eye.prototype.updateLevel = function (level) {
   this.level = level;
   this.anger = false;
   this.usedPatterns = 0;
-
-  // this.stopEyeTweens(true);
 };
 
 BasicGame.Eye.prototype.restartLevel = function () {
   this.anger = false;
   this.levelEnded = true;
-
-  // this.destroyTimers();
-  // this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
@@ -910,21 +901,11 @@ BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
 
   this.searching = false;
   this.shooting = false;
-
-  // this.destroyTimers();
-  // this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.gameInDarkness = function () {
   this.levelEnded = true;
   this.sleep();
-
-  // this.viewZone.x = this.viewZone.positions['0'];
-  // this.pupil.x = this.pupilImagePositions['0'];
-  // this.invisibleZoneImage.alpha = 0;
-
-  // this.destroyTimers();
-  // this.stopEyeTweens();
 };
 
 BasicGame.Eye.prototype.destroyTimers = function () {
@@ -1551,7 +1532,7 @@ BasicGame.Light.prototype.create = function (level) {
   var light = null;
 
   this.level = level;
-  this.walls = this.level.walls;
+  this.setWalls(level);
   this.shadowsDrawn = false;
 
   // Add the light(s)
@@ -1852,8 +1833,12 @@ BasicGame.Light.prototype.getWallIntersection = function (ray) {
 };
 
 BasicGame.Light.prototype.updateWalls = function (level) {
-  this.walls = level.walls;
+  this.setWalls(level);
   this.shadowsDrawn = false;
+};
+
+BasicGame.Light.prototype.setWalls = function (level) {
+  this.walls = level.walls;
 };
 },{"BasicGame":1}],8:[function(require,module,exports){
 var BasicGame = require('BasicGame');
@@ -2926,8 +2911,11 @@ BasicGame.Player.prototype.restartLevel = function (hideDarknessDelay) {
 
 BasicGame.Player.prototype.gameInDarkness = function () {
   this.playerSprite.alpha = 1;
-  this.playerSprite.width = this.BASE_SIZE;
-  this.playerSprite.height = this.BASE_SIZE;
+
+  this.stopAnimationTweens();
+
+  // this.playerSprite.width = this.BASE_SIZE;
+  // this.playerSprite.height = this.BASE_SIZE;
 };
 
 BasicGame.Player.prototype.placeDialogueGroup = function () {
@@ -3016,6 +3004,9 @@ BasicGame.Player.prototype.hideDialogue = function (delay) {
 };
 
 BasicGame.Player.prototype.enableBody = function () {
+  this.playerSprite.width = this.BASE_SIZE;
+  this.playerSprite.height = this.BASE_SIZE;
+
   this.playerSprite.body.enable = true;
   this.playerSprite.body.allowGravity = true;
 };
@@ -3026,6 +3017,10 @@ BasicGame.Player.prototype.setPlayerPositionInLevel = function () {
   this.playerSprite.body.reset(this.playerSprite.x, this.playerSprite.y);
 };
 
+BasicGame.Player.prototype.stopAnimationTweens = function () {
+  // this.game.tweens.removeFrom(this.playerSprite);
+  // console.log("Tweens running on player? ", this.game.tweens.isTweening(this.playerSprite));
+};
 },{"BasicGame":1}],10:[function(require,module,exports){
 var BasicGame = require('BasicGame');
 window.onload = function () {
@@ -3221,6 +3216,16 @@ BasicGame.Game.prototype.create = function () {
   this.game.camera.setSize(this.game.world.width / 2, this.game.world.height / 2);
   this.game.camera.setPosition(0, 0);
 
+  // add the consience sound
+  if (!this.conscienceSound) {
+    this.conscienceSound = this.game.add.sound('conscience');
+    this.conscienceSound.onStop.addOnce(function () {
+      if (this.music && this.music.isPlaying === false) {
+        this.music.play();
+      }
+    }, this);
+  }
+
   // add the music
   if (!this.music) {
     if (BasicGame.currentLevel <= 6) {
@@ -3229,11 +3234,6 @@ BasicGame.Game.prototype.create = function () {
     else if (BasicGame.currentLevel > 6) {
       this.music = this.game.add.sound('lvl_7-10', 1, true);
     }
-  }
-
-  // add the consience sound
-  if (!this.conscienceSound) {
-    this.conscienceSound = this.game.add.sound('conscience');
   }
 
   this.game.input.keyboard.addKeyCapture([
@@ -3504,7 +3504,6 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
         if (levelNumber === 7) {
           // change the music to lvl_7-10
           this.music = this.game.add.sound('lvl_7-10', 1, true);
-          this.music.play();
         }
       }, this);
 
@@ -3719,14 +3718,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
     // make the player say a line
     if (BasicGame.currentLevel === 7) {
       this.conscienceSound.play();
-      // this.conscienceSound.onStop.addOnce(function () {
-      //   this.music.play();
-      // }, this);
     }
-
-    /* if (this.musicUpdated === true) {
-      this.musicUpdated = false;
-    } */
 
     this.showPlayerDialogue();
   }
@@ -3735,7 +3727,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 
   // make the EYE seek for the player
 
-  if (this.music && this.music.isPlaying === false) {
+  if (this.music && this.music.isPlaying === false && BasicGame.currentLevel !== 7) {
     this.music.play();
   }
 
