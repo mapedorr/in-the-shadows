@@ -49,7 +49,33 @@ var BasicGame = {
   },
   changeHTMLBackground: function (color) {
     document.body.style.backgroundColor = color;
+  },
+  getLevelMusicData: function (levelNumber) {
+    var data = { key: '', file: 'assets/audio/music/' };
+    var level = levelNumber || this.currentLevel;
 
+    if (level <= 6) {
+      data.key = 'dig-up-a';
+      data.file += 'DigUpA.ogg';
+    }
+    else if (level >= 7 && level <= 10) {
+      if (level === 7) {
+        data.playFact = true;
+      }
+
+      data.key = 'dig-up-b';
+      data.file += 'DigUpB.ogg';
+    } else if (level >= 11 && level <= 20) {
+
+      data.key = 'guilt';
+      data.file += 'Guilt.ogg';
+    }
+    else if (level >= 21) {
+      data.key = 'i-did-it';
+      data.file += 'IDidIt.ogg';
+    }
+
+    return data;
   }
 };
 
@@ -375,7 +401,7 @@ BasicGame.Eye = function (game, gameObj) {
   this.anger = null;
   this.shooting = null;
   this.searching = null;
-  this.levelEnded = null;
+  this.levelComplete = null;
   this.currentPatternId = -1;
   this.usedPatterns = 0;
   this.movementTime = null;
@@ -472,18 +498,18 @@ BasicGame.Eye.prototype.create = function (playerObj, level, lightning) {
   // ---------------------------------------------------------------------------
   // setup the sounds
   if (!this.laughSound) {
-    this.laughSound = this.game.add.sound('eye', 0.1);
+    this.laughSound = this.game.add.sound('eye');
   }
 
   if (!this.angerSound) {
-    this.angerSound = this.game.add.sound('eye-anger', 0.8);
+    this.angerSound = this.game.add.sound('eye-anger');
   }
 
   // ---------------------------------------------------------------------------
   // set global properties
   this.shooting = false;
   this.searching = false;
-  this.levelEnded = false;
+  this.levelComplete = false;
   this.usedPatterns = 0;
   this.anger = false;
   this.xDistanceMax = Math.abs((this.pupilImagePositions['6']) - this.eye.centerX);
@@ -506,7 +532,7 @@ BasicGame.Eye.prototype.update = function () {
     this.bitmap.context.clearRect(0, 0, this.game.width, this.game.height);
   }
 
-  if (this.levelEnded === true) {
+  if (this.levelComplete === true) {
     // the player is dead
     return;
   }
@@ -619,7 +645,7 @@ BasicGame.Eye.prototype.isPlayerInsideViewZone = function () {
  *                         starting
  */
 BasicGame.Eye.prototype.initSearch = function (delay) {
-  if (this.levelEnded === true) {
+  if (this.levelComplete === true) {
     return;
   }
 
@@ -785,7 +811,7 @@ BasicGame.Eye.prototype.runPupilViewZoneTweens = function (targetPosition) {
     x: this.viewZone.positions[targetPosition]
   }, this.movementTime);
   this.viewZoneMovementTween.onComplete.addOnce(function () {
-    if (this.shooting === false || this.levelEnded === false) {
+    if (this.shooting === false || this.levelComplete === false) {
       this.nextStepInPattern();
 
       this.viewZoneMovementTween = null;
@@ -798,7 +824,7 @@ BasicGame.Eye.prototype.runPupilViewZoneTweens = function (targetPosition) {
 BasicGame.Eye.prototype.nextStepInPattern = function (delay) {
   // wait a second before changing to a new pattern
   this.nextStepTimer = this.gameObj.helper.timer(delay || 1000, function () {
-    if (this.levelEnded === true || this.shooting === true) {
+    if (this.levelComplete === true || this.shooting === true) {
       return;
     }
 
@@ -844,7 +870,7 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
   this.calmDownTimer.add(3000,
     function () {
       if (tweensInPause === true) {
-        if (this.levelEnded === true) {
+        if (this.levelComplete === true) {
           return;
         }
 
@@ -877,7 +903,7 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
 };
 
 BasicGame.Eye.prototype.levelStart = function (levelRestarted) {
-  this.levelEnded = false;
+  this.levelComplete = false;
 
   this.shooting = false;
 
@@ -893,18 +919,18 @@ BasicGame.Eye.prototype.updateLevel = function (level) {
 
 BasicGame.Eye.prototype.restartLevel = function () {
   this.anger = false;
-  this.levelEnded = true;
+  this.levelComplete = true;
 };
 
-BasicGame.Eye.prototype.levelEndedEvent = function (levelCompleted) {
-  this.levelEnded = true;
+BasicGame.Eye.prototype.levelCompleteEvent = function (levelCompleted) {
+  this.levelComplete = true;
 
   this.searching = false;
   this.shooting = false;
 };
 
 BasicGame.Eye.prototype.gameInDarkness = function () {
-  this.levelEnded = true;
+  this.levelComplete = true;
   this.sleep();
 };
 
@@ -1001,14 +1027,14 @@ BasicGame.Eye.prototype.getTired = function () {
   this.viewZone.alpha = 0;
   this.invisibleZoneImage.alpha = 0;
 
-  if (this.levelEnded === true) {
+  if (this.levelComplete === true) {
     return;
   }
 
   this.getMadTimer = this.game.time.create(true);
   this.getMadTimer.add(1200,
     function () {
-      if (this.levelEnded === true) {
+      if (this.levelComplete === true) {
         return;
       }
 
@@ -1042,7 +1068,7 @@ BasicGame.Eye.prototype.getMad = function () {
     this.searchAgainTimer = this.game.time.create(true);
     this.searchAgainTimer.add(this.RESTART_SEARCH_DELAY,
       function () {
-        if (this.levelEnded === true) {
+        if (this.levelComplete === true) {
           return;
         }
 
@@ -1147,7 +1173,7 @@ BasicGame.Helper.prototype.getSkyColor = function (levelNumber) {
   } else if (levelNumber <= 20) {
     return '#33393D';
   } else {
-    return '#4E1B1B';
+    return '#202049';
   }
 };
 },{"BasicGame":1}],6:[function(require,module,exports){
@@ -1211,7 +1237,7 @@ BasicGame.Level.prototype.create = function () {
   this.dayNumberText.oriY = this.dayNumberText.y;
 
   if (!this.spikeSound) {
-    this.spikeSound = this.game.add.sound('spike', 0.2);
+    this.spikeSound = this.game.add.sound('spike');
   }
 
   this.createLevel(parseInt(BasicGame.currentLevel));
@@ -1890,7 +1916,7 @@ BasicGame.Lightning.prototype.create = function (eye, player, level) {
   this.lightningTimer = 0;
 
   if (!this.lightningSound) {
-    this.lightningSound = this.game.add.sound('ray', 0.2);
+    this.lightningSound = this.game.add.sound('ray');
   }
 };
 
@@ -2088,6 +2114,7 @@ BasicGame.Player = function (game, input, gameObj) {
   this.dialogueFadeOutStarted = false;
   this.jumpFeedbackStarted = false;
   this.dialogueMarkHeight = null;
+  this.playSlideSound = false;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // define movement constants
@@ -2160,6 +2187,8 @@ BasicGame.Player.prototype.create = function (level) {
     particleY = null,
     increaseAmount = null;
 
+  this.playSlideSound = false;
+
   //Save the walls in the level
   this.level = level;
 
@@ -2202,34 +2231,36 @@ BasicGame.Player.prototype.create = function (level) {
   }
 
   if (!this.jumpSound) {
-    this.jumpSound = this.game.add.sound('jump', 0.2);
+    this.jumpSound = this.game.add.sound('jump');
     this.jumpSound.onPlay.add(function () {
       this.slideSound.stop();
     }, this);
   }
 
   if (!this.walkSound) {
-    this.walkSound = this.game.add.sound('walk', 0.1);
+    this.walkSound = this.game.add.sound('walk');
     this.walkSound.onPlay.add(function () {
-      this.slideSound.stop();
-    }, this);
-    this.walkSound.onStop.add(function () {
-      if (this.onGround === true) {
-        this.slideSound.play();
+      if (this.slideSound.isPlaying === true) {
+        this.slideSound.stop();
       }
     }, this);
+    // this.walkSound.onStop.add(function () {
+    //   if (this.onGround === true) {
+    //     this.slideSound.play();
+    //   }
+    // }, this);
   }
 
   if (!this.slideSound) {
-    this.slideSound = this.game.add.sound('slide', 0.08, true);
+    this.slideSound = this.game.add.sound('slide');
   }
 
   if (!this.fallSound) {
-    this.fallSound = this.game.add.sound('fall', 0.1);
+    this.fallSound = this.game.add.sound('fall');
   }
 
   if (!this.deathSound) {
-    this.deathSound = this.game.add.sound('death', 0.3);
+    this.deathSound = this.game.add.sound('death');
     this.deathSound.onPlay.add(function () {
       this.slideSound.stop();
     }, this);
@@ -2237,7 +2268,7 @@ BasicGame.Player.prototype.create = function (level) {
 
   // load the audio for pieces
   if (!this.pieceSound) {
-    this.pieceSound = this.game.add.sound('piece', 0.2);
+    this.pieceSound = this.game.add.sound('piece');
   }
 
   // create the group that will contain the particles that will be used during
@@ -2391,11 +2422,12 @@ BasicGame.Player.prototype.update = function () {
 
   // reset some values to default if the player is touching the ground
   if (this.onGround) {
+    this.playSlideSound = false;
     this.onGroundFeedback();
   }
   else {
     this.walkSound.stop();
-    this.slideSound.stop();
+    // this.slideSound.stop();
 
     // check if the character just left the ground
     if (this.justLeaveGround === false && this.playerSprite.body.velocity.y > 0) {
@@ -2432,7 +2464,7 @@ BasicGame.Player.prototype.update = function () {
       if (!this.leftFirstPress) {
         this.leftFirstPress = true;
         this.currentJumpMultiplier = 0;
-        this.walkFeedback(true);
+        this.walkFeedback();
       }
       else {
         this.currentJumpMultiplier += this.JUMP_MULTIPLIER_AMOUNT;
@@ -2503,6 +2535,7 @@ BasicGame.Player.prototype.update = function () {
     if (!this.isJumping) {
       this.isJumping = true;
     }
+    this.playSlideSound = true;
   }
   else {
     this.isJumping = false;
@@ -2616,7 +2649,7 @@ BasicGame.Player.prototype.onGroundFeedback = function () {
 };
 
 BasicGame.Player.prototype.walkFeedback = function (left) {
-  var squashTween = null;
+  /* var squashTween = null;
 
   if (!this.walkTweenPlayed) {
     squashTween = this.game.add.tween(this.playerSprite);
@@ -2629,7 +2662,7 @@ BasicGame.Player.prototype.walkFeedback = function (left) {
     }, this);
     squashTween.start();
     this.walkTweenPlayed = true;
-  }
+  } */
 
   if (!this.walkSound.isPlaying) {
     this.walkSound.play();
@@ -2656,7 +2689,11 @@ BasicGame.Player.prototype.duckFeedback = function () {
 
 BasicGame.Player.prototype.onWallFeedback = function () {
   this.playBaseSizeTween();
-  if (!this.slideSound.isPlaying) this.slideSound.play();
+
+  if (!this.slideSound.isPlaying && this.playSlideSound === true) {
+    this.slideSound.play();
+    this.playSlideSound = false;
+  }
 };
 
 BasicGame.Player.prototype.playBaseSizeTween = function () {
@@ -2695,9 +2732,9 @@ BasicGame.Player.prototype.jumpFeedback = function () {
   // this.isJumping = true;
   this.currentJumpMultiplier = 0;
 
-  if (!this.jumpSound.isPlaying) {
-    this.jumpSound.play();
-  }
+  // if (!this.jumpSound.isPlaying) {
+  this.jumpSound.play();
+  // }
 };
 
 /**
@@ -2723,7 +2760,7 @@ BasicGame.Player.prototype.checkCollisions = function () {
 
       if (this.collectedPieces === this.level.pieces.children.length) {
         // the level has been finished
-        this.gameObj.levelEnded();
+        this.gameObj.levelComplete();
       }
     },
     null,
@@ -3150,6 +3187,7 @@ BasicGame.Game = function (game) {
   };
   this.levelCompleted = null;
   this.musicUpdated = false;
+  this.changeMusic = false;
 };
 
 BasicGame.Game.developmentMode = false;
@@ -3184,6 +3222,7 @@ BasicGame.Game.prototype.create = function () {
   var darknessSprite = null;
   var flashBitmap = null;
   var flashSprite = null;
+  var levelMusic = BasicGame.getLevelMusicData();
 
   // ═════════════════════════════════════════════
   // define game properties and setup game objects
@@ -3193,6 +3232,7 @@ BasicGame.Game.prototype.create = function () {
   this.levelCompleted = false;
   this.updateShadows = true;
   this.musicUpdated = false;
+  this.changeMusic = false;
 
   // set stage background
   this.background = this.game.add.image(0, 0, this.getSkyName());
@@ -3218,22 +3258,22 @@ BasicGame.Game.prototype.create = function () {
 
   // add the consience sound
   if (!this.conscienceSound) {
-    this.conscienceSound = this.game.add.sound('conscience');
+    this.conscienceSound = this.game.add.sound('the-fact');
     this.conscienceSound.onStop.addOnce(function () {
-      if (this.music && this.music.isPlaying === false) {
-        this.music.play();
+      if (BasicGame.currentLevel !== 30) {
+        if (this.music && this.music.isPlaying === false) {
+          this.music.play();
+        }
+      }
+      else {
+        this.showDarkness();
       }
     }, this);
   }
 
   // add the music
   if (!this.music) {
-    if (BasicGame.currentLevel <= 6) {
-      this.music = this.game.add.sound('lvl_1-6', 1, true);
-    }
-    else if (BasicGame.currentLevel > 6) {
-      this.music = this.game.add.sound('lvl_7-10', 1, true);
-    }
+    this.music = this.game.add.sound(levelMusic.key, 1, true);
   }
 
   this.game.input.keyboard.addKeyCapture([
@@ -3466,15 +3506,23 @@ BasicGame.Game.prototype.inputIsActive = function (key) {
   return this.game.input.keyboard.isDown(key);
 };
 
-BasicGame.Game.prototype.levelEnded = function () {
+BasicGame.Game.prototype.levelComplete = function () {
   this.levelCompleted = true;
   BasicGame.isRetrying = false;
+
+  if (BasicGame.currentLevel === 30) {
+    conscienceSound.play();
+    return;
+  }
+
   this.showDarkness();
 };
 
 BasicGame.Game.prototype.loadLevel = function (levelNumber) {
   var skyName = this.getSkyName();
   var levelData = this.helper.getLevelIdAndName(levelNumber);
+  var levelMusic = BasicGame.getLevelMusicData();
+  this.changeMusic = false;
 
   this.saveGame(BasicGame.setDay(levelNumber));
 
@@ -3496,14 +3544,15 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
       this.background.loadTexture(skyName);
     }
 
-    if (levelNumber === 7) {
+    if (this.changeMusic === true) {
+      this.changeMusic = false;
+
       this.music.onFadeComplete.addOnce(function () {
         this.music.destroy();
         this.music = null;
-
-        if (levelNumber === 7) {
-          // change the music to lvl_7-10
-          this.music = this.game.add.sound('lvl_7-10', 1, true);
+        this.music = this.game.add.sound(levelMusic.key, 1, true);
+        if (!BasicGame.getLevelMusicData().playFact) {
+          this.music.play();
         }
       }, this);
 
@@ -3520,9 +3569,11 @@ BasicGame.Game.prototype.loadLevel = function (levelNumber) {
     null,
     Phaser.Tilemap.TILED_JSON);
 
-  if (levelNumber === 7) {
-    if (this.game.cache.checkSoundKey('lvl_7-10') === false) {
-      this.load.audio('lvl_7-10', 'assets/audio/music/lvl_7-10.mp3', true);
+  if (levelMusic.key !== BasicGame.getLevelMusicData(levelNumber - 1).key) {
+    this.changeMusic = true;
+
+    if (this.game.cache.checkSoundKey(levelMusic.key) === false) {
+      this.load.audio(levelMusic.key, levelMusic.file, true);
     }
   }
 
@@ -3629,7 +3680,7 @@ BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
     Phaser.Easing.Quadratic.Out,
     true);
 
-  this.eye.levelEndedEvent(false);
+  this.eye.levelCompleteEvent(false);
 
   if (destroyPlayer) {
     // play the animation of death of the player
@@ -3675,7 +3726,7 @@ BasicGame.Game.prototype.putDarkTweenCompleted = function () {
       this.isLoadingLevel = true;
 
       // notify to the eye that the level was ended
-      this.eye.levelEndedEvent(true);
+      this.eye.levelCompleteEvent(true);
       this.loadLevel(++BasicGame.currentLevel);
     }, this);
   }
@@ -3712,11 +3763,12 @@ BasicGame.Game.prototype.hideDarkness = function (durationInMS) {
 };
 
 BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
+  var levelMusic = BasicGame.getLevelMusicData();
   this.isLoadingLevel = false;
 
   if (BasicGame.isRetrying === false) {
     // make the player say a line
-    if (BasicGame.currentLevel === 7) {
+    if (levelMusic.playFact === true) {
       this.conscienceSound.play();
     }
 
@@ -3727,7 +3779,7 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 
   // make the EYE seek for the player
 
-  if (this.music && this.music.isPlaying === false && BasicGame.currentLevel !== 7) {
+  if (this.music && this.music.isPlaying === false && !levelMusic.playFact) {
     this.music.play();
   }
 
@@ -3928,7 +3980,7 @@ BasicGame.MainMenu.prototype.create = function () {
   this.creditsGroup.alpha = 0;
 
   // add the splash_music
-  this.splashMusic = this.game.add.sound('conscience');
+  this.splashMusic = this.game.add.sound('the-fact');
   // this.splashMusic.onFadeComplete.addOnce(function (soundObj) {
   //   soundObj.stop();
   // }, this);
@@ -4190,6 +4242,7 @@ BasicGame.MainMenu.prototype.showKeysDescription = function (show) {
 BasicGame.MainMenu.prototype.newGame = function () {
   var levelData = null;
   var skyName = null;
+  var levelMusic = BasicGame.getLevelMusicData();
 
   this.disableMenu();
 
@@ -4206,8 +4259,8 @@ BasicGame.MainMenu.prototype.newGame = function () {
     null,
     Phaser.Tilemap.TILED_JSON);
 
-  if (this.game.cache.checkSoundKey('lvl_1-6') === false) {
-    this.load.audio('lvl_1-6', 'assets/audio/music/lvl_1-6.mp3', true);
+  if (this.game.cache.checkSoundKey(levelMusic.key) === false) {
+    this.load.audio(levelMusic.key, levelMusic.file, true);
   }
 
   this.game.load.start();
@@ -4216,10 +4269,15 @@ BasicGame.MainMenu.prototype.newGame = function () {
 BasicGame.MainMenu.prototype.nextScene = function () {
   this.disableMenu();
 
-  this.splashMusic.onFadeComplete.addOnce(function () {
+  if (this.splashMusic.isPlaying === true) {
+    this.splashMusic.onFadeComplete.addOnce(function () {
+      this.state.start((BasicGame.currentLevel <= 30) ? 'Game' : 'TheEnd');
+    }, this);
+    this.splashMusic.fadeOut(this.MUSIC_FADE_DELAY);
+  }
+  else {
     this.state.start((BasicGame.currentLevel <= 30) ? 'Game' : 'TheEnd');
-  }, this);
-  this.splashMusic.fadeOut(this.MUSIC_FADE_DELAY);
+  }
 };
 
 BasicGame.MainMenu.prototype.disableMenu = function () {
@@ -4351,6 +4409,7 @@ BasicGame.Preloader.prototype.preload = function () {
   var i = 0;
   var skyName = null;
   var levelData = null;
+  var levelMusic = BasicGame.getLevelMusicData();
 
   // these are the assets we loaded in Boot.js
   // a nice sparkly background and a loading progress bar
@@ -4372,7 +4431,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('credits_en', 'assets/sprites/credits_en.png');
   this.load.image('credits_es', 'assets/sprites/credits_es.png');
 
-  this.load.audio('conscience', 'assets/audio/music/conscience.mp3', true);
+  this.load.audio('the-fact', 'assets/audio/music/TheFact.ogg', true);
 
   //  ---------------------------------
   //  ---| load the assets for the Game
@@ -4404,15 +4463,9 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.audio('ray', 'assets/audio/sfx/ray.ogg', true);
   this.load.audio('eye', 'assets/audio/sfx/eye.ogg', true);
   this.load.audio('eye-anger', 'assets/audio/sfx/anger.ogg', true);
-  this.load.audio('piece', 'assets/audio/sfx/piece01.ogg', true);
-  // this.load.audio('level_music', 'assets/audio/music/levels_music.ogg', true);
+  this.load.audio('piece', 'assets/audio/sfx/piece.ogg', true);
 
-  if (BasicGame.currentLevel <= 6) {
-    this.load.audio('lvl_1-6', 'assets/audio/music/lvl_1-6.mp3', true);
-  }
-  else if (BasicGame.currentLevel > 6) {
-    this.load.audio('lvl_7-10', 'assets/audio/music/lvl_7-10.mp3', true);
-  }
+  this.load.audio(levelMusic.key, levelMusic.file, true);
 
   this.load.bitmapFont('font', 'assets/fonts/FiraCode_0.png',
     'assets/fonts/FiraCode.fnt', null);
@@ -4495,7 +4548,7 @@ BasicGame.TheEnd = function (game) {
   this.panelsGroup = null;
   this.buttonGroup = null;
   this.footerText = null;
-  this.music = null;
+  // this.music = null;
   this.thanksText = null;
 
   // global properties
@@ -4522,8 +4575,6 @@ BasicGame.TheEnd.prototype.preload = function () {
     this.load.image(this.PANELS_KEYS[4], 'assets/sprites/end_en_2-2.png');
     this.load.image(this.PANELS_KEYS[5], 'assets/sprites/end_en_2-3.png');
   }
-
-  this.load.audio('exit_music', 'assets/audio/music/the_end.ogg', true);
 };
 
 BasicGame.TheEnd.prototype.create = function () {
@@ -4574,8 +4625,8 @@ BasicGame.TheEnd.prototype.create = function () {
   this.buttonGroup.alpha = 0;
 
   // play the music
-  this.music = this.game.add.sound('exit_music', 0.1, true);
-  this.music.play();
+  // this.music = this.game.add.sound('exit_music', 0.1, true);
+  // this.music.play();
 
   // init the animations for the first page
   this.currentPanelIndex = 0;
@@ -4594,7 +4645,7 @@ BasicGame.TheEnd.prototype.shutdown = function () {
   this.panelsGroup.destroy();
   this.buttonGroup.destroy();
   this.footerText.destroy();
-  this.music.destroy();
+  // this.music.destroy();
   this.thanksText.destroy();
 };
 // ║                                                                           ║
