@@ -116,8 +116,8 @@ BasicGame.Days = function () {
     4: {
       'number': 839,
       'text': {
-        'en': 'I no longer need so many pills',
-        'es': 'Ya no necesito tantas píldoras'
+        'en': 'I thought that I wouldn\'t need pills',
+        'es': 'Pensé que ya no necesitaría píldoras'
       },
       'waitTime': 3
     },
@@ -196,8 +196,8 @@ BasicGame.Days = function () {
     14: {
       'number': 186,
       'text': {
-        'en': 'He deserved it, I know',
-        'es': 'Se lo merecía, lo sé'
+        'en': 'What I\'ve done was right, I know',
+        'es': 'Lo que hice estuvo bien, lo sé'
       },
       'waitTime': 5
     },
@@ -236,8 +236,8 @@ BasicGame.Days = function () {
     19: {
       'number': 74,
       'text': {
-        'en': 'A band was blamed, they wont keep looking',
-        'es': 'Una banda fue culpada, no van a seguir buscando'
+        'en': 'A gang was blamed, they wont keep looking',
+        'es': 'Una pandilla fue culpada, no van a seguir buscando'
       },
       'waitTime': 4
     },
@@ -276,48 +276,48 @@ BasicGame.Days = function () {
     24: {
       'number': 6,
       'text': {
-        'en': 'I saw him on the street today. That can\'t be!!!',
-        'es': 'Hoy me pareció verlo en la calle. ¡ESO NO PUEDE SER!'
+        'en': 'I had that nightmare again...',
+        'es': 'Otra vez tuve esa pesadilla...'
       },
       'waitTime': 5
     },
     25: {
       'number': 5,
       'text': {
-        'en': 'I can\'t take it anymore! I have to confess what I did',
-        'es': '¡No puedo más! Tengo que confesar lo que hice'
+        'en': 'I can\'t take it anymore! I have to...',
+        'es': '¡No puedo más! Tengo que...'
       },
       'waitTime': 4
     },
     26: {
       'number': 4,
       'text': {
-        'en': 'Bill was a damn drunk good for nothing! I had to do it',
-        'es': '¡Ernesto era un maldito borracho bueno para nada! Tenía que hacerlo'
+        'en': 'I had to do it',
+        'es': 'Tenía que hacerlo'
       },
       'waitTime': 6
     },
     27: {
       'number': 3,
       'text': {
-        'en': 'The police have been asking questions, WHAT AM I GOING TO DO!!!???',
-        'es': 'La policía ha estado preguntando cosas, ¿¡QUÉ VOY A HACER!?'
+        'en': '...WHAT AM I GOING TO DO!!!???',
+        'es': '...¿¡QUÉ VOY A HACER!?'
       },
       'waitTime': 6
     },
     28: {
       'number': 2,
       'text': {
-        'en': 'Reassure yourself, you know he deserved it',
-        'es': 'Tranquila, sabes que él lo merecía'
+        'en': 'Fuck! fuck! fuck! fuck!',
+        'es': 'Mierda! mierda! mierda!'
       },
       'waitTime': 7
     },
     29: {
       'number': 1,
       'text': {
-        'en': 'I have to...confess...I...I have to...',
-        'es': 'Tengo que...confesar...te...tengo que...'
+        'en': 'I have to...I...I have to...',
+        'es': 'Tengo que...te...tengo que...'
       },
       'waitTime': 3
     },
@@ -375,11 +375,13 @@ BasicGame.Eye = function (game, gameObj) {
   //   ]
   this.PATTERNS = [
     [[0, 3, 1], [3, 6, 2], [6, 0, 1]], // this will be always the first pattern
-    [[0, 1, 0.5], [1, 4, 1], [4, 2, 1], [2, 5, 2], [5, 0, 1]],
+    [[0, 1, 0.3], [1, 4, 0.5], [4, 2, 0.7], [2, 5, 1], [5, 0, 0.5]],
     [[0, 3, 0.5], [3, 6, 0.6], [6, 0, 0.5]], // EL PUTO
-    [[0, 4, 0.5], [4, 1, 1], [1, 5, 1], [5, 2, 2], [2, 0, 1]]
+    [[0, 4, 0.3], [4, 1, 0.5], [1, 5, 0.7], [5, 2, 1], [2, 0, 0.5]]
   ];
   this.FIRST_PATTERN_INDEX = 0; // 0
+  this.LAPS_PER_PATTERN = 2; // 2
+  this.WAIT_AFTER_SHOOT_TIME = 1000;
 
   // destroyable objects
   this.eye = null;
@@ -616,6 +618,7 @@ BasicGame.Eye.prototype.shutdown = function () {
   this.destroyTimers();
   this.laughSound.destroy();
   this.angerSound.destroy();
+  this.alarmSound.destroy();
 };
 // ║                                                                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -668,7 +671,7 @@ BasicGame.Eye.prototype.initSearch = function (delay) {
   this.eye.frame = 0;
 
   // set the flag that indicates if the EYE is seeking for the player
-  this.searching = true;
+  // this.searching = true;
   this.shooting = false;
 
   // pick a pattern to start the search
@@ -695,13 +698,6 @@ BasicGame.Eye.prototype.setPattern = function () {
   var intent = 0;
   var newPatternIndex = 0;
 
-  // set the defaults for the pupil and the view zone
-  this.viewZone.x = this.viewZone.positions['0'];
-  this.viewZone.alpha = 1;
-  this.pupil.x = this.pupilImagePositions['0'];
-  this.pupil.alpha = 1;
-  this.invisibleZoneImage.alpha = .5;
-
   this.lap = 0;
   this.currentPatternCompleted = false;
 
@@ -716,10 +712,6 @@ BasicGame.Eye.prototype.setPattern = function () {
     // position (player on left then this.patternReversed equals true)
     this.patternReversed = this.gameObj.player.playerSprite.centerX <= this.eye.centerX;
   }
-  else if (this.usedPatterns === 1) {
-    this.currentPatternIdIndex = this.gameObj.helper.randomNumber(0, this.PATTERNS.length);
-    this.currentPatternId = this.currentPatternIdIndex;
-  }
   else {
     // pick the next pattern
     if (++this.currentPatternIdIndex >= this.PATTERNS.length) {
@@ -732,19 +724,25 @@ BasicGame.Eye.prototype.setPattern = function () {
 
   this.pattern = this.PATTERNS[this.currentPatternId];
 
-  if (this.currentPatternId === 2) {
-    this.alarmSound.play();
-  }
-
-  // get the index of the initial step of the pattern
+  // define if the pattern should be or not played reversed
   this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
+
+  // set the defaults for the pupil and the view zone
+  this.viewZone.x = this.viewZone.positions['0'];
+  this.pupil.x = this.pupilImagePositions['0'];
+  this.pupil.alpha = 1;
+  this.viewZone.alpha = 1;
+  this.invisibleZoneImage.alpha = .5;
+
   this.iteratePattern();
 };
 
-BasicGame.Eye.prototype.iteratePattern = function () {
+BasicGame.Eye.prototype.iteratePattern = function (ignorePosition) {
   var initPosition = -1;
   var targetPosition = -1;
   var currentPattern = this.pattern[this.currentPatternStep];
+
+  this.searching = true;
 
   // iterate over the steps of the pattern and make the EYE move to each
   // position of it
@@ -759,18 +757,31 @@ BasicGame.Eye.prototype.iteratePattern = function () {
       targetPosition = currentPattern[0];
     }
 
-    // set the initial X position of the EYE and the view zone
-    this.viewZone.x = this.viewZone.positions[initPosition];
-    this.pupil.x = this.pupilImagePositions[initPosition];
-    this.movementTime = currentPattern[2] * 1000;
+    if (!ignorePosition) {
+      // set the initial X position of the EYE and the view zone
+      this.viewZone.x = this.viewZone.positions[initPosition];
+      this.pupil.x = this.pupilImagePositions[initPosition];
+      this.movementTime = currentPattern[2] * 1000;
+    }
+    else {
+      this.movementTime = (this.viewZoneTweensStartTime + this.movementTime) - this.viewZoneTweensStopTime;
+
+      if (this.movementTime > (currentPattern[2] * 1000)) {
+        this.movementTime = 0;
+      }
+    }
 
     this.runPupilViewZoneTweens(targetPosition);
   }
   else {
     // if there are no more steps in the pattern
-    if (++this.lap < 2) {
+    if (++this.lap < this.LAPS_PER_PATTERN) {
       this.gameObj.helper.timer(1000,
         function () {
+          if (this.searching === false || this.levelComplete === true) {
+            return;
+          }
+
           this.currentPatternStep = !this.patternReversed ? 0 : this.pattern.length - 1;
           this.iteratePattern();
         },
@@ -801,6 +812,7 @@ BasicGame.Eye.prototype.runPupilViewZoneTweens = function (targetPosition) {
     return;
   }
 
+  this.viewZoneTweensStartTime = this.game.time.now;
   this.pupilMovementTween = this.game.add.tween(this.pupil);
   this.pupilMovementTween.to({
     x: this.pupilImagePositions[targetPosition]
@@ -851,7 +863,6 @@ BasicGame.Eye.prototype.nextStepInPattern = function (delay) {
 BasicGame.Eye.prototype.shootPlayer = function (target) {
   var tweensInPause = false;
 
-
   this.shooting = true;
   this.searching = false;
   this.eye.frame = 2; // angry eye
@@ -862,15 +873,8 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
   this.viewZone.alpha = 0;
   this.invisibleZoneImage.alpha = 0;
 
-  // pause the current tweens, if any, for the pupil and the viewzone
-  if (this.viewZoneMovementTween && this.viewZoneMovementTween.isRunning === true) {
-    this.viewZoneMovementTween.pause();
-    this.pupilMovementTween.pause();
+  this.stopEyeTweens(true);
 
-    tweensInPause = true;
-  }
-
-  // this.destroyTimers(this.getTiredTimer, this.getMadTimer, this.searchAgainTimer);
   this.destroyTimers();
 
   // init the timer that will make the EYE calm down again and restart the
@@ -878,34 +882,28 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
   this.calmDownTimer = this.game.time.create(true);
   this.calmDownTimer.add(3000,
     function () {
-      if (tweensInPause === true) {
+      if (this.levelComplete === true) {
+        return;
+      }
+
+      // this.currentPatternCompleted = true;
+      this.shooting = false;
+
+      this.eye.frame = 0;
+      this.pupil.alpha = 1;
+      this.viewZone.alpha = 1;
+      this.invisibleZoneImage.alpha = .5;
+      this.searching = true;
+
+      this.gameObj.helper.timer(this.WAIT_AFTER_SHOOT_TIME, function () {
+        console.log("Yeeeeeeep!!!!");
+
         if (this.levelComplete === true) {
           return;
         }
 
-        this.eye.frame = 0;
-
-        this.pupil.alpha = 1;
-        this.viewZone.alpha = 1;
-        this.invisibleZoneImage.alpha = .5;
-
-        this.searching = true;
-        this.shooting = false;
-
-        if (this.viewZoneMovementTween && this.pupilMovementTween) {
-          this.viewZoneMovementTween.resume();
-          this.pupilMovementTween.resume();
-        }
-      }
-      else {
-
-        if (this.viewZoneMovementTween) {
-          this.viewZoneMovementTween.stop();
-          this.pupilMovementTween.stop();
-        }
-
-        this.initSearch();
-      }
+        this.iteratePattern(true);
+      }, this);
     },
     this);
   this.calmDownTimer.start();
@@ -915,6 +913,10 @@ BasicGame.Eye.prototype.levelStart = function (levelRestarted) {
   this.levelComplete = false;
 
   this.shooting = false;
+
+  if (BasicGame.currentLevel >= 21) {
+    this.LAPS_PER_PATTERN = 1;
+  }
 
   this.destroyTimers();
   this.stopEyeTweens();
@@ -973,12 +975,14 @@ BasicGame.Eye.prototype.destroyTimers = function () {
   }
 };
 
-BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
+BasicGame.Eye.prototype.stopEyeTweens = function (ignoreReset) {
   if (this.viewZoneMovementTween && this.pupilMovementTween) {
     this.viewZoneMovementTween.onComplete.removeAll();
     this.pupilMovementTween.onComplete.removeAll();
     this.viewZoneMovementTween.stop();
     this.pupilMovementTween.stop();
+
+    this.viewZoneTweensStopTime = this.game.time.now;
   }
 
   if (this.madTween && this.madTween.isRunning) {
@@ -987,15 +991,13 @@ BasicGame.Eye.prototype.stopEyeTweens = function (resetPosition) {
     this.eye.x = this.eye.originalX;
   }
 
-  if (resetPosition === true) {
-    this.viewZone.x = this.viewZone.positions['0'];
-    this.pupil.x = this.pupilImagePositions['0'];
-  }
-
   this.viewZone.alpha = 0;
   this.invisibleZoneImage.alpha = 0;
   this.pupil.alpha = 0;
-  this.resetPatterns();
+
+  if (!ignoreReset) {
+    this.resetPatterns();
+  }
 };
 
 BasicGame.Eye.prototype.resetPatterns = function () {
@@ -1005,6 +1007,8 @@ BasicGame.Eye.prototype.resetPatterns = function () {
   this.currentPatternId = null;
   this.currentPatternIdIndex = -1;
   this.currentPatternStep = 0;
+  this.viewZoneTweensStartTime = this.game.time.now;
+  this.viewZoneTweensStopTime = this.viewZoneTweensStartTime;
 };
 
 BasicGame.Eye.prototype.rejoice = function (callback) {
@@ -1062,16 +1066,34 @@ BasicGame.Eye.prototype.getMad = function () {
 
   // play the angry animation and the sound linked to it
   this.eye.frame = 2;
-  this.angerSound.play();
 
-  // shake the world
-  this.madTween.to({ x: this.eye.originalX + 10 },
-    40,
-    Phaser.Easing.Sinusoidal.InOut,
-    false,
-    0,
-    4,
-    true);
+  if (this.currentPatternId === 1) {
+    // the next pattern will be the hardest one
+    this.gameObj.flashScreen(true);
+    this.alarmSound.play();
+
+    // shake the world
+    this.madTween.to({ x: this.eye.originalX + 10 },
+      40,
+      Phaser.Easing.Sinusoidal.InOut,
+      false,
+      0,
+      14,
+      true);
+  }
+  else {
+    this.angerSound.play();
+
+    // shake the world
+    this.madTween.to({ x: this.eye.originalX + 10 },
+      40,
+      Phaser.Easing.Sinusoidal.InOut,
+      false,
+      0,
+      4,
+      true);
+  }
+
   this.madTween.onComplete.addOnce(function () {
     // restart the search after a while
     this.searchAgainTimer = this.game.time.create(true);
@@ -1086,6 +1108,7 @@ BasicGame.Eye.prototype.getMad = function () {
       this);
     this.searchAgainTimer.start();
   }, this);
+
   this.madTween.start();
 };
 
@@ -1573,7 +1596,6 @@ BasicGame.Light.prototype.create = function (level) {
   // Add the light(s)
   this.lightGroup = this.game.add.group();
   light = this.game.add.sprite((this.game.world.width / 2), -16, 'light');
-  // light = this.game.add.sprite((this.game.world.width / 2) - 16, -16, 'light');
   light.alpha = 0;
 
   // Set the pivot point of the light to the center of the texture
@@ -2239,11 +2261,6 @@ BasicGame.Player.prototype.create = function (level) {
         this.slideWallSound.stop();
       }
     }, this);
-    // this.walkSound.onStop.add(function () {
-    //   if (this.onGround === true) {
-    //     this.slideGroundSound.play();
-    //   }
-    // }, this);
   }
 
   if (!this.fallSound) {
@@ -2388,7 +2405,7 @@ BasicGame.Player.prototype.update = function () {
       this.gameObj.helper.timer(this.waitTime, this.hideDialogue, this);
     }
 
-    if (this.gameObj.eye.eye.frame === 3) {
+    if (this.gameObj.eye.eye.frame === 3 && this.gameObj.inDarkness === false) {
       this.gameObj.eye.initSearch();
     }
   }
@@ -2544,20 +2561,6 @@ BasicGame.Player.prototype.update = function () {
   if (this.playerSprite.left < 0) this.playerSprite.left = 0;
   if (this.playerSprite.right > this.game.world.width) this.playerSprite.left = this.game.world.width - this.playerSprite.width;
 
-  // make the jump a bit higher if the player keeps pressing the jump button
-  // if (this.input.keyboard.downDuration(this.jumpKey1, this.JUMP_TIME) === true ||
-  //     this.input.keyboard.downDuration(this.jumpKey2, this.JUMP_TIME)
-  // ) {
-  //   this.playerSprite.body.velocity.y += this.JUMP_SPEED * 0.1 * this.jumpMultiplier;
-  //   if (this.jumpMultiplier > 0.1)
-  //     this.jumpMultiplier *= 0.95;
-  //   else
-  //     this.jumpMultiplier = 0;
-  // }
-  // else {
-  //   this.jumpMultiplier = 0;
-  // }
-
   if (headHit && !this.fallSound.isPlaying) {
     this.fallSound.play();
   }
@@ -2655,28 +2658,8 @@ BasicGame.Player.prototype.slideGroundFeedback = function () {
 };
 
 BasicGame.Player.prototype.walkFeedback = function (left) {
-  /* var squashTween = null;
-
-  if (!this.walkTweenPlayed) {
-    squashTween = this.game.add.tween(this.playerSprite);
-    squashTween.to({
-      width: this.BASE_SIZE + this.STRETCH_SQUASH_VALUE / 1.5
-    }, 150, Phaser.Easing.Exponential.Out);
-    squashTween.onComplete.add(function () {
-      this.playBaseSizeTween();
-      this.walkTweenPlayed = false;
-    }, this);
-    squashTween.start();
-    this.walkTweenPlayed = true;
-  } */
-
   if (!this.walkSound.isPlaying) {
     this.walkSound.play();
-    // this.gameObj.helper.timer(this.slideGroundTime, function () {
-    //   if (this.onGround === true) {
-    //     this.slideGroundSound.play();
-    //   }
-    // }, this);
   }
 };
 
@@ -2689,11 +2672,9 @@ BasicGame.Player.prototype.duckFeedback = function () {
       width: this.BASE_SIZE + this.STRETCH_SQUASH_VALUE,
       height: this.BASE_SIZE - this.STRETCH_SQUASH_VALUE
     }, 150, Phaser.Easing.Exponential.Out);
-    // squashTween.onComplete.add(function () {
-    //   this.playBaseSizeTween();
-    //   this.duckTweenPlaying = false;
-    // }, this);
+
     squashTween.start();
+
     this.duckTweenPlaying = true;
   }
 };
@@ -2965,8 +2946,8 @@ BasicGame.Player.prototype.gameInDarkness = function () {
 
   this.stopAnimationTweens();
 
-  // this.playerSprite.width = this.BASE_SIZE;
-  // this.playerSprite.height = this.BASE_SIZE;
+  this.playerSprite.width = this.BASE_SIZE;
+  this.playerSprite.height = this.BASE_SIZE;
 };
 
 BasicGame.Player.prototype.placeDialogueGroup = function () {
@@ -2992,7 +2973,8 @@ BasicGame.Player.prototype.showDialogue = function (immediateHide) {
 
   if (dayObj.text) {
     this.waitTime = (immediateHide === true) ? 100 : dayObj.waitTime * 1000;
-    this.dialogueText.text = dayObj.text[BasicGame.language];
+    this.dialogueText.text = this.gameObj.level.dayNumberText.text + ': ' +
+      dayObj.text[BasicGame.language];
     this.dialogueBackground.height = this.dialogueText.textHeight + this.DIALOGUE_TEXT_V_PADDING * 2;
     this.dialogueMark.y = this.dialogueBackground.height + 8;
     dialogueHeight = this.dialogueBackground.height + 8 + this.dialogueMarkHeight;
@@ -3069,8 +3051,8 @@ BasicGame.Player.prototype.setPlayerPositionInLevel = function () {
 };
 
 BasicGame.Player.prototype.stopAnimationTweens = function () {
-  // this.game.tweens.removeFrom(this.playerSprite);
-  // console.log("Tweens running on player? ", this.game.tweens.isTweening(this.playerSprite));
+  console.log("Tweens running on player? ", this.game.tweens.isTweening(this.playerSprite));
+  this.game.tweens.removeFrom(this.playerSprite);
 };
 },{"BasicGame":1}],10:[function(require,module,exports){
 var BasicGame = require('BasicGame');
@@ -3171,7 +3153,7 @@ BasicGame.Game = function (game) {
   this.savingText = null;
   this.uiGroup = null;
   this.pauseGroup = null;
-  this.conscienceSound = null;
+  this.factSound = null;
 
   // references to other classes
   this.days = null;
@@ -3271,9 +3253,9 @@ BasicGame.Game.prototype.create = function () {
   this.game.camera.setPosition(0, 0);
 
   // add the consience sound
-  if (!this.conscienceSound) {
-    this.conscienceSound = this.game.add.sound('the-fact');
-    this.conscienceSound.onStop.addOnce(function () {
+  if (!this.factSound) {
+    this.factSound = this.game.add.sound('the-fact-b');
+    this.factSound.onStop.addOnce(function () {
       if (BasicGame.currentLevel !== 30) {
         if (this.music && this.music.isPlaying === false) {
           this.music.play();
@@ -3338,6 +3320,7 @@ BasicGame.Game.prototype.create = function () {
   flashBitmap.ctx.fill();
   flashSprite = new Phaser.Sprite(this.game, 0, 0, flashBitmap);
   flashSprite.alpha = 0;
+  flashSprite.tint = 0x00FFFF;
   this.flashGroup.addChild(flashSprite);
 
   // ════════════════
@@ -3447,8 +3430,8 @@ BasicGame.Game.prototype.shutdown = function () {
   this.darknessGroup.destroy();
   // destroy sounds
   this.music.destroy();
-  if (this.conscienceSound) {
-    this.conscienceSound.destroy();
+  if (this.factSound) {
+    this.factSound.destroy();
   }
   // destroy tweens
   this.putDarkTween.stop();
@@ -3653,16 +3636,7 @@ BasicGame.Game.prototype.subtractLife = function () {
     Phaser.Easing.Quadratic.Out,
     true);
 
-  // create the tween for flashing the camera
-  var flashTween = this.game.add.tween(this.flashGroup.getChildAt(0));
-  flashTween.to({ alpha: 1 },
-    40,
-    Phaser.Easing.Sinusoidal.InOut,
-    false,
-    0,
-    4,
-    true);
-  flashTween.start();
+  this.flashScreen();
 
   if (this.lifes <= 0) {
     // save the current level
@@ -3680,6 +3654,37 @@ BasicGame.Game.prototype.subtractLife = function () {
     }, this);
     timer.start();
   }
+};
+
+BasicGame.Game.prototype.flashScreen = function (alarm) {
+  // create the tween for flashing the camera
+  var flashTween = this.game.add.tween(this.flashGroup.getChildAt(0));
+
+  if (alarm === true) {
+    this.flashGroup.getChildAt(0).tint = 0xE73729;
+
+    flashTween.to({ alpha: 1 },
+      63,
+      Phaser.Easing.Sinusoidal.InOut,
+      false,
+      0,
+      10,
+      true);
+  }
+  else {
+    this.flashGroup.getChildAt(0).tint = 0x00FFFF;
+
+    flashTween.to({ alpha: 1 },
+      40,
+      Phaser.Easing.Sinusoidal.InOut,
+      false,
+      0,
+      4,
+      true);
+  }
+
+  flashTween.start();
+
 };
 
 BasicGame.Game.prototype.subtractAllLifes = function (destroyPlayer) {
@@ -3788,15 +3793,13 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
   if (BasicGame.isRetrying === false) {
     // make the player say a line
     if (levelMusic.playFact === true) {
-      this.conscienceSound.play();
+      this.factSound.play();
     }
 
     this.showPlayerDialogue();
   }
 
   this.lifes = this.LIFES_AMOUNT;
-
-  // make the EYE seek for the player
 
   if (this.music && this.music.isPlaying === false && !levelMusic.playFact) {
     this.music.play();
@@ -3811,7 +3814,6 @@ BasicGame.Game.prototype.removeDarkTweenCompleted = function () {
 BasicGame.Game.prototype.createLifeIndicators = function () {
   for (var i = 0; i < this.lifes; i++) {
     var lifeSprite = new Phaser.Sprite(this.game, 0, 0, "life");
-    // lifeSprite.scale.set(0.5, 0.8);
     lifeSprite.x = (i % 3) * (lifeSprite.width + 6);
 
     this.lifesGroup.addChild(lifeSprite);
@@ -4000,9 +4002,6 @@ BasicGame.MainMenu.prototype.create = function () {
 
   // add the splash_music
   this.splashMusic = this.game.add.sound('the-fact');
-  // this.splashMusic.onFadeComplete.addOnce(function (soundObj) {
-  //   soundObj.stop();
-  // }, this);
   this.splashMusic.play();
 
   BasicGame.changeHTMLBackground(BasicGame.Helper.prototype.getSkyColor(BasicGame.currentLevel));
@@ -4454,7 +4453,6 @@ BasicGame.Preloader.prototype.preload = function () {
 
   //  ---------------------------------
   //  ---| load the assets for the Game
-  this.load.image('pupil', 'assets/sprites/pupil_normal.png');
   this.load.image('light', 'assets/sprites/light.png');
   this.load.image('view_zone', 'assets/sprites/view_zone.png');
   this.load.image('piece', 'assets/sprites/piece.png');
@@ -4467,6 +4465,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.image('pause_es', 'assets/sprites/pause_es.png');
   this.load.image('pause_en', 'assets/sprites/pause_en.png');
 
+  this.load.spritesheet('pupil', 'assets/sprites/pupil.png', 64, 64, 2);
   this.load.spritesheet('player', 'assets/sprites/player.png', 32, 32, 1);
   this.load.spritesheet('eye', 'assets/sprites/eye.png', 222, 118, 4);
   this.load.spritesheet('checkbox', 'assets/sprites/checkbox.png', 24, 24, 2);
@@ -4484,6 +4483,7 @@ BasicGame.Preloader.prototype.preload = function () {
   this.load.audio('slide-ground', 'assets/audio/sfx/slide_ground.ogg', true);
   this.load.audio('slide-wall', 'assets/audio/sfx/slide_wall.ogg', true);
   this.load.audio('walk', 'assets/audio/sfx/walk.ogg', true);
+  this.load.audio('the-fact-b', 'assets/audio/music/TheFactB.ogg', true);
 
   this.load.audio(levelMusic.key, levelMusic.file, true);
 
