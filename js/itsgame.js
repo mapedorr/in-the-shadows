@@ -896,8 +896,6 @@ BasicGame.Eye.prototype.shootPlayer = function (target) {
       this.searching = true;
 
       this.gameObj.helper.timer(this.WAIT_AFTER_SHOOT_TIME, function () {
-        console.log("Yeeeeeeep!!!!");
-
         if (this.levelComplete === true) {
           return;
         }
@@ -1232,7 +1230,6 @@ BasicGame.Level = function (game, gameObj) {
   this.walls = null;
   this.spikes = null;
   this.pieces = null;
-  this.spikeSound = null;
 
   // global properties
   this.game = game;
@@ -1524,6 +1521,10 @@ BasicGame.Level.prototype.createShowSpikeTween = function (spikeSprite, properti
       null,
       false,
       delay);
+
+  showSpikeTween.onStart.add(function () {
+    this.spikeSound.play();
+  }, this);
 
   showSpikeTween.onComplete.add(function () {
     this.isHidden = false;
@@ -2419,6 +2420,10 @@ BasicGame.Player.prototype.update = function () {
 
   if (headHit) {
     this.isJumping = false;
+
+    if (this.fallSound.isPlaying === false) {
+      this.fallSound.play();
+    }
   }
 
   // jump jump jump
@@ -2560,10 +2565,6 @@ BasicGame.Player.prototype.update = function () {
   // sprite out of the bounds of the game world
   if (this.playerSprite.left < 0) this.playerSprite.left = 0;
   if (this.playerSprite.right > this.game.world.width) this.playerSprite.left = this.game.world.width - this.playerSprite.width;
-
-  if (headHit && !this.fallSound.isPlaying) {
-    this.fallSound.play();
-  }
 
   if (BasicGame.Game.developmentMode === true) { // [ development mode ]
     this.bitmap.dirty = true;
@@ -2762,9 +2763,6 @@ BasicGame.Player.prototype.checkCollisions = function () {
     this.game.physics.arcade.collide(this.playerSprite, this.level.walls,
       function (player, spikePlatform) {
         if (spikePlatform.spikeRef && spikePlatform.spikeRef.isHidden === true) {
-          if (this.gameObj.level.spikeSound.isPlaying === false) {
-            this.gameObj.level.spikeSound.play();
-          }
           spikePlatform.spikeRef.showTween.start();
         }
       }, null, this);
@@ -2944,7 +2942,7 @@ BasicGame.Player.prototype.restartLevel = function (hideDarknessDelay) {
 BasicGame.Player.prototype.gameInDarkness = function () {
   this.playerSprite.alpha = 1;
 
-  this.stopAnimationTweens();
+  // this.stopAnimationTweens();
 
   this.playerSprite.width = this.BASE_SIZE;
   this.playerSprite.height = this.BASE_SIZE;
@@ -3188,7 +3186,7 @@ BasicGame.Game = function (game) {
 
 BasicGame.Game.developmentMode = false;
 BasicGame.isRetrying = false;
-BasicGame.ignoreSave = false;
+BasicGame.ignoreSave = true;
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║ PHASER STATE METHODS                                                     ║
@@ -3508,8 +3506,9 @@ BasicGame.Game.prototype.levelComplete = function () {
   BasicGame.isRetrying = false;
 
   if (BasicGame.currentLevel === 30) {
-    conscienceSound.play();
-    return;
+    this.music.fadeOut(1000);
+    this.factSound.play();
+    this.GO_TO_NEXT_LEVEL_DELAY = this.factSound.durationMS;
   }
 
   this.showDarkness();
@@ -4260,7 +4259,7 @@ BasicGame.MainMenu.prototype.showKeysDescription = function (show) {
 BasicGame.MainMenu.prototype.newGame = function () {
   var levelData = null;
   var skyName = null;
-  var levelMusic = BasicGame.getLevelMusicData();
+  var levelMusic = BasicGame.getLevelMusicData(1);
 
   this.disableMenu();
 
@@ -4605,6 +4604,7 @@ BasicGame.TheEnd.prototype.create = function () {
   var panelCounter = 0;
   var nextButton = null;
   var nextText = null;
+  var levelMusic = BasicGame.getLevelMusicData();
 
   this.nextClicked = false;
 
@@ -4647,8 +4647,8 @@ BasicGame.TheEnd.prototype.create = function () {
   this.buttonGroup.alpha = 0;
 
   // play the music
-  // this.music = this.game.add.sound('exit_music', 0.1, true);
-  // this.music.play();
+  this.music = this.game.add.sound(levelMusic.key);
+  this.music.play();
 
   // init the animations for the first page
   this.currentPanelIndex = 0;
@@ -4667,7 +4667,7 @@ BasicGame.TheEnd.prototype.shutdown = function () {
   this.panelsGroup.destroy();
   this.buttonGroup.destroy();
   this.footerText.destroy();
-  // this.music.destroy();
+  this.music.destroy();
   this.thanksText.destroy();
 };
 // ║                                                                           ║
